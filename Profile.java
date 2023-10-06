@@ -1,5 +1,6 @@
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 
 public class Profile
 {
@@ -7,11 +8,13 @@ public class Profile
     private String username;
     private String hashedPassword;
     private int nextEventId;
+    private ArrayList<AbstractEvent> events;
 
     public Profile(String username, String passwordStr)
     {
         this.username = username;
         nextEventId = 0;
+        events = new ArrayList<AbstractEvent>();
 
         //Hashes the entered password and stores it in hashedPassword
         setNewPassword(passwordStr);
@@ -51,11 +54,12 @@ public class Profile
         return nextEventId;
     }
 
-    /**
-     * Increments nextEventId by 1
-     */
-    public void incrementNextEventId() {
-        nextEventId++;
+    public void setNextEventId(int nextEventId) {
+        this.nextEventId = nextEventId;
+    }
+
+    public ArrayList<AbstractEvent> getEvents() {
+        return events;
     }
 
     /**
