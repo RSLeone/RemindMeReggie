@@ -1,7 +1,7 @@
 import java.time.LocalTime;
 import java.util.Date;
 
-public  class AbstractEvent 
+public abstract class AbstractEvent 
 {
     
     public enum Frequencies {NOT_RECURRING, DAILY, MONTHLY, YEARLY}
@@ -17,19 +17,78 @@ public  class AbstractEvent
     private int severityLevel;
     private Frequencies frequency;
     
-    public AbstractEvent(String eventId, String eventName, LocalTime startTime, LocalTime endTime, Date startDate,
-            Date endDate, String eventType, boolean isComplete, int severityLevel,
-            AbstractEvent.Frequencies frequency) {
-        this.eventId = eventId;
-        this.eventName = eventName;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.eventType = eventType;
-        this.isComplete = isComplete;
-        this.severityLevel = severityLevel;
-        this.frequency = frequency;
+    public AbstractEvent(AbstractEventBuilder b) {
+        this.eventId = b.eventId;
+        this.eventName = b.eventName;
+        this.startTime = b.startTime;
+        this.endTime = b.endTime;
+        this.startDate = b.startDate;
+        this.endDate = b.endDate;
+        this.eventType = b.eventType;
+        this.isComplete = b.isComplete;
+        this.severityLevel = b.severityLevel;
+        this.frequency = b.frequency;
+    }
+
+
+    public static abstract class AbstractEventBuilder{
+        private String eventId;
+        private String eventName;
+        private LocalTime startTime;
+        private LocalTime endTime;
+        private Date startDate;
+        private Date endDate;
+        private String eventType;
+        private boolean isComplete = false;
+        private int severityLevel;
+        private Frequencies frequency;
+
+        public AbstractEventBuilder eventId(String eID){
+            this.eventId = eID;
+            return this;
+        }
+
+        public AbstractEventBuilder eventName(String eName){
+            this.eventName = eName;
+            return this;
+        }
+
+        public AbstractEventBuilder startTime(LocalTime time){
+            this.startTime = time;
+            return this;
+        }
+
+        public AbstractEventBuilder endTime(LocalTime time){
+            this.endTime = time;
+            return this;
+        }
+
+        public AbstractEventBuilder startDate(Date date){
+            this.startDate = date;
+            return this;
+        }
+
+        public AbstractEventBuilder endDate(Date date){
+            this.endDate = date;
+            return this;
+        }
+
+        public AbstractEventBuilder eventType(String eType){
+            this.eventType = eType;
+            return this;
+        }
+
+        public AbstractEventBuilder severityLevel(int severityLevel){
+            this.severityLevel = severityLevel;
+            return this;
+        }
+
+        public AbstractEventBuilder frequency(Frequencies frequency){
+            this.frequency = frequency;
+            return this;
+        }
+
+        public abstract AbstractEvent build();
     }
 
     public String getEventId() {

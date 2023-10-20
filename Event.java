@@ -1,13 +1,16 @@
-import java.time.LocalTime;
-import java.util.Date;
 
 public class Event extends AbstractEvent {
     
-    public Event(String eventId, String eventName, LocalTime startTime, LocalTime endTime, Date startDate,
-            Date endDate, String eventType, boolean isComplete, int severityLevel,
-            Event.Frequencies frequency) 
+    public static class EventBuilder extends AbstractEventBuilder{
+        @Override
+        public Event build(){
+            return new Event(this);
+        }
+    }
+    
+    private Event(EventBuilder b) 
     {
-        super(eventId, eventName, startTime, endTime, startDate, endDate, eventType, isComplete, severityLevel, frequency);
+        super(b);
     }
 
 }
