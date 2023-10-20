@@ -22,7 +22,7 @@ public class Driver
         System.out.println(b2.getEventType());
         System.out.println(b2.getPercentCompleted());
         System.out.println(b2.getNextStepNumber());
-
-
+        b2.getSteps().add(new Step("HA", 1, false));
+        System.out.println(b2.getSteps().get(0).getStepName());
     }
 }
