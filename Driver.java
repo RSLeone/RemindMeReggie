@@ -1,9 +1,11 @@
+import java.io.File;
 import java.time.LocalTime;
 
 public class Driver
 {
     public static void main(String args[])
-    {
+    {   
+        
         Event b1 = (Event) new Event.EventBuilder().eventId("122313131").eventName("Party").
         startTime(LocalTime.now()).endTime(LocalTime.now()).startDate(null).endDate(null).eventType("EVENT").severityLevel(24)
         .build();
@@ -24,5 +26,9 @@ public class Driver
         System.out.println(b2.getNextStepNumber());
         b2.getSteps().add(new Step("HA", 1, false));
         System.out.println(b2.getSteps().get(0).getStepName());
+
+        // LocalFile lf = new LocalFile();
+        // lf.setFilePath("easy");
+
     }
 }
