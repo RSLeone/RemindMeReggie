@@ -30,6 +30,6 @@ public class Driver
         Profile p = new Profile("Andrew", "e12141213131");
         PersistenceFactory perf = new PersistenceFactory();
         LocalFile lf = (LocalFile) perf.getPersistent(PersistenceFactory.persistenceType.LocalFile);
-        lf.save(p);
+        lf.save();
     }
 }
