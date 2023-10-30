@@ -1,5 +1,5 @@
 public abstract class Persistence {
-    private UserInterFaceController userInterFaceController;
-    public abstract void save();
-    public abstract void load();
+    private UserInterfaceController userInterFaceController;
+    public abstract void save(Profile p);
+    public abstract Profile load();
 }

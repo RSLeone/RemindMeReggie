@@ -1,9 +1,9 @@
 public class ProfileBackupController {
-    public static void generateBackup(){
+    public static void generateBackup(Profile p){
 
     }
 
-    public static void restoreFromBackup(){
-
+    public static Profile restoreFromBackup(){
+        return null;
     }
 }
