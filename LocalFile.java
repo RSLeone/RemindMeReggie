@@ -8,7 +8,8 @@ public class LocalFile extends Persistence{
     private String fileDir = "./Profiles";
     
     @Override
-    public void save(Profile p){
+    public void save(){
+        Profile p = this.getUserInterfaceController().getCurrentProfile();
         setFilePath(p.getUsername());
         
         File f = new File(filePath);
@@ -45,8 +46,8 @@ public class LocalFile extends Persistence{
     }
 
     @Override
-    public Profile load(){
-        return null;
+    public void load(){
+        
     }
 
     private void setFilePath(String userName){
