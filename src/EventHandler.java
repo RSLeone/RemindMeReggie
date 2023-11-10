@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class EventHandler {
 
-    public boolean addEvent(Profile p, String eventName, LocalTime startTime, LocalTime endTime, Date startDate, Date endDate, String eventType, int severityLevel, AbstractEvent.Frequencies frequency) {
+    public static boolean addEvent(Profile p, String eventName, LocalTime startTime, LocalTime endTime, Date startDate, Date endDate, String eventType, int severityLevel, AbstractEvent.Frequencies frequency) {
         ArrayList<AbstractEvent> events = p.getEvents();
         int newID = p.getNextEventId();
         p.setNextEventId(newID + 1);
@@ -19,7 +19,7 @@ public class EventHandler {
         return true;
     }
 
-    public boolean editEvent(Profile p, AbstractEvent e) {
+    public static boolean editEvent(Profile p, AbstractEvent e) {
         ArrayList<AbstractEvent> events = p.getEvents();
         for (int i = 0; i < events.size(); i++) {
             if (events.get(i) == e) {
@@ -75,13 +75,13 @@ public class EventHandler {
         return false;
     }
 
-    public boolean removeEvent(Profile p, int eventId){
+    public static boolean removeEvent(Profile p, int eventId){
         ArrayList<AbstractEvent> events = p.getEvents();
         events.remove(eventId);
         return true;
     }
 
-    public boolean addMonitoredEvent(Profile p, String eventName, LocalTime startTime, LocalTime endTime, Date startDate, Date endDate, String eventType, Boolean isComplete, int severityLevel, AbstractEvent.Frequencies frequency) {
+    public static boolean addMonitoredEvent(Profile p, String eventName, LocalTime startTime, LocalTime endTime, Date startDate, Date endDate, String eventType, Boolean isComplete, int severityLevel, AbstractEvent.Frequencies frequency) {
         ArrayList<AbstractEvent> events = p.getEvents();
         int newID = p.getNextEventId();
         p.setNextEventId(newID + 1);
@@ -91,7 +91,7 @@ public class EventHandler {
         return true;
     }
 
-    public boolean addStep(MonitoredEvent m, Step s) {
+    public static boolean addStep(MonitoredEvent m, Step s) {
         ArrayList<Step> steps = m.getSteps();
         int newStepNum = m.getNextStepNumber();
         m.setNextStepNumber(newStepNum + 1);
@@ -99,7 +99,7 @@ public class EventHandler {
         return true;
     }
 
-    public AbstractEvent searchForEventSeverity(Profile p, int level){
+    public static AbstractEvent searchForEventSeverity(Profile p, int level){
         ArrayList<AbstractEvent> events = p.getEvents();
         for(int i = 0; i < events.size(); i++){
             if (events.get(i).getSeverityLevel() == level){
@@ -109,7 +109,7 @@ public class EventHandler {
         return null;
     }
 
-    public AbstractEvent searchForEventDate(Profile p, Date date) {
+    public static AbstractEvent searchForEventDate(Profile p, Date date) {
         ArrayList<AbstractEvent> events = p.getEvents();
         for(int i = 0; i < events.size(); i++){
             if (events.get(i).getStartDate() == date){
@@ -119,7 +119,7 @@ public class EventHandler {
         return null;
     }
     
-    public AbstractEvent searchforEventType(Profile p, String type) {
+    public static AbstractEvent searchforEventType(Profile p, String type) {
         ArrayList<AbstractEvent> events = p.getEvents();
         for(int i = 0; i < events.size(); i++){
             if (events.get(i).getEventType() == type){
@@ -129,7 +129,7 @@ public class EventHandler {
         return null;
     }
 
-    public ArrayList<AbstractEvent> sortBySeverity(Profile p) {
+    public static ArrayList<AbstractEvent> sortBySeverity(Profile p) {
         ArrayList<AbstractEvent> events = p.getEvents();
         ArrayList<AbstractEvent> sortedList = (ArrayList<AbstractEvent>)events.clone();
         Comparator<AbstractEvent> comparator = (event1, event2) -> event1.getSeverityLevel() - event2.getSeverityLevel();
@@ -137,7 +137,7 @@ public class EventHandler {
         return sortedList;
     }
 
-    public Step generateNextStep(Profile p) {
+    public static Step generateNextStep(Profile p) {
         ArrayList<AbstractEvent> events = p.getEvents();
         AbstractEvent curNextEvent = null;
         AbstractEvent curEvent;
@@ -156,7 +156,7 @@ public class EventHandler {
         return null;
     }
     
-    public void displayEventSummary(Profile p) { //Display every event's attributes
+    public static void displayEventSummary(Profile p) { //Display every event's attributes
         ArrayList<AbstractEvent> events = p.getEvents();
         System.out.println("Displaying Event Summary:");
         for (int i = 0; i < events.size(); i++) {
