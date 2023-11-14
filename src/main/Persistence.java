@@ -1,3 +1,5 @@
+package main;
+
 public abstract class Persistence {
     private UserInterfaceController userInterFaceController;
     public abstract void save(Profile p);
