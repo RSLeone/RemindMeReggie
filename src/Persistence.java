@@ -1,7 +1,7 @@
 public abstract class Persistence {
     private UserInterfaceController userInterFaceController;
-    public abstract void save();
-    public abstract void load();
+    public abstract void save(Profile p);
+    public abstract Profile load(String username);
 
     public UserInterfaceController getUserInterfaceController(){
         return this.userInterFaceController;
