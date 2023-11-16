@@ -1,4 +1,7 @@
+package main;
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalTime;
 
 public class Driver
@@ -27,9 +30,14 @@ public class Driver
         // b2.getSteps().add(new Step("HA", 1, false));
         // System.out.println(b2.getSteps().get(0).getStepName());
 
-        Profile p = new Profile("Andrew", "e12141213131");
-        PersistenceFactory perf = new PersistenceFactory();
-        LocalFile lf = (LocalFile) perf.getPersistent(PersistenceFactory.persistenceType.LocalFile);
-        lf.save();
+
+
+        Profile p = new Profile("TestProfile", "myPassword");
+        JsonFile j = new JsonFile();
+        j.setLocation("./profiles");
+        j.save(p);
+
+        Profile u = j.load(p.getUsername());
+        System.out.println(u.getUsername() + " " + u.getHashedPassword());
     }
 }

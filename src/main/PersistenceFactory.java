@@ -1,3 +1,4 @@
+package main;
 import java.util.ArrayList;
 
 public class PersistenceFactory {
@@ -10,7 +11,7 @@ public class PersistenceFactory {
     
     public Persistence getPersistent(persistenceType e){
         if(e == persistenceType.LocalFile){
-            LocalFile lf = new LocalFile();
+            JsonFile lf = new JsonFile();
             persistentObjs.add(lf);
             return lf;
         }
