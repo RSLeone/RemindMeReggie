@@ -7,22 +7,23 @@ import java.nio.file.Paths;
 import com.google.gson.Gson;
 
 public class JsonFile extends Persistence{
-    private String location;
     
     @Override
-    public void save(Profile p){
+    public boolean save(Profile p){
         // Create a Gson instance
         Gson gson = new Gson();
 
         String jsonString = gson.toJson(p);
 
-        try (FileWriter writer = new FileWriter(location + '/' + p.getUsername() + ".json")) {
+        try (FileWriter writer = new FileWriter(getLocation() + '/' + p.getUsername() + ".json")) {
             // Write the string to the file
             writer.write(jsonString);
             writer.close();
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     @Override
@@ -31,7 +32,7 @@ public class JsonFile extends Persistence{
         String fileContent = "";
 
         try {
-            byte[] bytes = Files.readAllBytes(Paths.get(location + "/" + username + ".json"));
+            byte[] bytes = Files.readAllBytes(Paths.get(getLocation() + "/" + username + ".json"));
 
             fileContent = new String(bytes, "UTF-8");
         }
@@ -41,7 +42,6 @@ public class JsonFile extends Persistence{
         }
 
         if(fileContent.isEmpty()){
-            System.out.println("File loading failed");
             return null;
         }
         
@@ -51,9 +51,12 @@ public class JsonFile extends Persistence{
         Profile p = gson.fromJson(fileContent, Profile.class);
 
         return p;
+    }
+
+    @Override
+    public void setDefaultLocation() {
+        setLocation("./profiles");
     }   
 
-    public void setLocation(String location){
-       this.location = location;
-    }
+    
 }
