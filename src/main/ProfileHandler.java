@@ -3,12 +3,14 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import main.PersistenceFactory.persistenceType;
+
 public class ProfileHandler {
     
     private static Profile currentProfile;
 
     //Revisit this after Andrew finishes presistence
-    public static void login(String username, String password, Persistence persistence)
+    public static boolean login(String username, String password)
     {
         //Search use persistence.load() to get the profile witht the passed in username and make sure the password is valid
         /*Profile loadedProfile = persistence.load();
@@ -30,17 +32,21 @@ public class ProfileHandler {
 
         */
  
+        return true;
+
     }
 
     //Revisit this after Andrew finished presistence
-    public static void logOut(Persistence persistence)
+    public static boolean logOut()
     {
         //Save the profile useing persistence.save()
         currentProfile = null;
+
+        return true;
     }
 
     //Revisit this after Andrew finished presistence
-    public static void createNewProfile(String username, String unhashedPassword, Persistence persistence)
+    public static boolean createNewProfile(String username, String unhashedPassword)
     {
         try 
         {
@@ -52,12 +58,16 @@ public class ProfileHandler {
         {
             System.out.println("The password entered could not be set. Please try creating a profile again.");
         }
+
+        return true;
     }
 
     //Revisit
-    public static void editCurrentProfileUsername(String newUserName, Persistence persistence)
+    public static boolean editCurrentProfileUsername(String newUserName)
     {
         //Save the profile using persistence.save()
+
+        return true;
     }
 
     //Revisit
@@ -66,19 +76,24 @@ public class ProfileHandler {
     *       otherwise prints that the new password could not be set
     * @param newPassword - the password to be hashed then set
     */
-    public static void editCurrentProfilePassword(String newPassword, Persistence persistence) 
+    public static boolean editCurrentProfilePassword(String newPassword) 
     {
         
         try
         {
             currentProfile.setHashedPassword(hashPassword(newPassword));
             //Save the profile using persistence.save()
+            PersistenceFactory pf = new PersistenceFactory();
+            pf.getPersistent(persistenceType.LocalFile);
         }
         catch(NoSuchAlgorithmException e)
         {
             System.out.println("The new password entered could not be set. Please try setting a new password again.");
+            return false;
         }
         
+        return true;
+
     }
 
     public static Profile getCurrentProfile() {
