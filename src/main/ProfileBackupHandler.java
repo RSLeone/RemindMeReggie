@@ -2,17 +2,20 @@ package main;
 
 public class ProfileBackupHandler {
 
-    public static boolean generateBackup(String fileLocation, Profile p, Persistence persistence){
-        if(p == null || persistence == null){
+    public static boolean generateBackup(String fileLocation, Profile p, PersistenceFactory.persistenceType t){
+        if(p == null){
             return false;
         }
+
+        Persistence persistence = (new PersistenceFactory()).getPersistent(t);
 
         persistence.setLocation(fileLocation);
 
         return persistence.save(p);
     }
 
-    public static boolean restoreFromBackup(String location, Persistence persistence, String username){
+    public static boolean restoreFromBackup(String location, PersistenceFactory.persistenceType t, String username){
+        Persistence persistence = (new PersistenceFactory()).getPersistent(t);
         persistence.setLocation(location);
         Profile p = persistence.load(username);
 
