@@ -1,4 +1,5 @@
 package main;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -57,7 +58,14 @@ public class JsonFile extends Persistence{
     @Override
     public void setDefaultLocation() {
         setLocation("./profiles");
-    }   
+    }
+    
+    @Override
+    public boolean delete(String username){
+        File file = new File(getLocation() + "/" + username + ".json");
+
+        return file.delete();
+    }
 
     
 }
