@@ -7,21 +7,41 @@ import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.Scanner;
+import javafx.util.Pair;
 
-public class EventController {
+public class EventHandler {
 
-    public boolean addEvent(Profile p, String eventName, LocalTime startTime, LocalTime endTime, Date startDate, Date endDate, String eventType, int severityLevel, AbstractEvent.Frequencies frequency) {
+    public static int addEvent(Profile p, String eventName, LocalTime startTime, LocalTime endTime, Date startDate, Date endDate, 
+                    String eventType, int severityLevel, AbstractEvent.Frequencies frequency) {
+
+        if (eventName.length() <= 0 || eventName.length() > 50) {
+            return -1;
+        }
+        if (eventType.length() <= 0 | eventType.length() > 50){
+            return -2;
+        }
+        if (severityLevel < 0 || severityLevel > 5) {
+            return -3;
+        }
+        
         ArrayList<AbstractEvent> events = p.getEvents();
         int newID = p.getNextEventId();
         p.setNextEventId(newID + 1);
-        AbstractEvent newEvent = new Event.EventBuilder().eventId(Integer.toString(newID)).eventName(eventName).startTime(startTime).endTime(endTime).startDate(startDate).endDate(endDate).eventType(eventType).severityLevel(severityLevel).frequency(frequency).build();
+        AbstractEvent newEvent = new Event.EventBuilder().eventId(Integer.toString(newID)).eventName(eventName).startTime(startTime)
+                        .endTime(endTime).startDate(startDate).endDate(endDate).eventType(eventType).severityLevel(severityLevel)
+                        .frequency(frequency).build();
 
         events.add(newEvent);
-        return true;
+        return 0;
     }
 
-    public boolean editEvent(Profile p, AbstractEvent e) {
+    public static int editEvent(Profile p, AbstractEvent e) {
         ArrayList<AbstractEvent> events = p.getEvents();
+
+        if (! events.contains(e)) {
+            return -4;
+        }
+
         for (int i = 0; i < events.size(); i++) {
             if (events.get(i) == e) {
                 AbstractEvent event = events.get(i);
@@ -67,50 +87,74 @@ public class EventController {
                 }
                 else {
                     scanner.close();
-                    return false;
+                    return -7;
                 }
                 scanner.close();
-                return true;
+                return 0;
             }
         }
-        return false;
+        return -4;
     }
 
-    public boolean removeEvent(Profile p, int eventId){
+    public static int removeEvent(Profile p, int eventId) {
         ArrayList<AbstractEvent> events = p.getEvents();
+
+        if (eventId < 0 || eventId >= events.size()) {
+            return -5;
+        }
+
         events.remove(eventId);
-        return true;
+        return 0;
     }
 
-    public boolean addMonitoredEvent(Profile p, String eventName, LocalTime startTime, LocalTime endTime, Date startDate, Date endDate, String eventType, Boolean isComplete, int severityLevel, AbstractEvent.Frequencies frequency) {
+    public static int addMonitoredEvent(Profile p, String eventName, LocalTime startTime, LocalTime endTime, Date startDate,
+                     Date endDate, String eventType, Boolean isComplete, int severityLevel, AbstractEvent.Frequencies frequency) {
+        
+        if (eventName.length() <= 0 || eventName.length() > 50) {
+            return -1;
+        }
+        if (eventType.length() <= 0 | eventType.length() > 50){
+            return -2;
+        }
+        if (severityLevel < 0 || severityLevel > 5) {
+            return -3;
+        }
+        
         ArrayList<AbstractEvent> events = p.getEvents();
         int newID = p.getNextEventId();
         p.setNextEventId(newID + 1);
-        AbstractEvent newEvent = new MonitoredEvent.MonitoredEventBuilder().eventId(Integer.toString(newID)).eventName(eventName).startTime(startTime).endTime(endTime).startDate(startDate).endDate(endDate).eventType(eventType).severityLevel(severityLevel).frequency(frequency).build();
+        AbstractEvent newEvent = new MonitoredEvent.MonitoredEventBuilder().eventId(Integer.toString(newID)).eventName(eventName)
+                        .startTime(startTime).endTime(endTime).startDate(startDate).endDate(endDate).eventType(eventType)
+                        .severityLevel(severityLevel).frequency(frequency).build();
 
         events.add(newEvent);
-        return true;
+        return 0;
     }
 
-    public boolean addStep(MonitoredEvent m, Step s) {
+    public static int addStep(MonitoredEvent m, Step s) {
         ArrayList<Step> steps = m.getSteps();
         int newStepNum = m.getNextStepNumber();
         m.setNextStepNumber(newStepNum + 1);
         steps.add(s);
-        return true;
+        return 0;
     }
 
-    public AbstractEvent searchForEventSeverity(Profile p, int level){
+    public static Pair<AbstractEvent, Integer> searchForEventSeverity(Profile p, int level) {
+
+        if (level < 0 || level > 5) {
+            return new Pair<AbstractEvent,Integer>(null, -3);
+        }
+        
         ArrayList<AbstractEvent> events = p.getEvents();
         for(int i = 0; i < events.size(); i++){
             if (events.get(i).getSeverityLevel() == level){
-                return events.get(i);
+                return new Pair<AbstractEvent, Integer> (events.get(i), 0);
             }
         }
         return null;
     }
 
-    public AbstractEvent searchForEventDate(Profile p, Date date) {
+    public static AbstractEvent searchForEventDate(Profile p, Date date) {
         ArrayList<AbstractEvent> events = p.getEvents();
         for(int i = 0; i < events.size(); i++){
             if (events.get(i).getStartDate() == date){
@@ -120,25 +164,36 @@ public class EventController {
         return null;
     }
     
-    public AbstractEvent searchforEventType(Profile p, String type) {
+    public static Pair<AbstractEvent, Integer> searchForEventType(Profile p, String type) {
+
+        if (type.length() <= 0 | type.length() > 50){
+            return new Pair<AbstractEvent,Integer>(null, -2);
+        }
+
         ArrayList<AbstractEvent> events = p.getEvents();
         for(int i = 0; i < events.size(); i++){
             if (events.get(i).getEventType() == type){
-                return events.get(i);
+                return new Pair<AbstractEvent, Integer> (events.get(i), 0);
             }
         }
         return null;
     }
 
-    public ArrayList<AbstractEvent> sortBySeverity(Profile p) {
+    public static ArrayList<AbstractEvent> sortBySeverity(Profile p, AbstractEvent.Frequencies frequency) {
         ArrayList<AbstractEvent> events = p.getEvents();
-        ArrayList<AbstractEvent> sortedList = (ArrayList<AbstractEvent>)events.clone();
+        ArrayList<AbstractEvent> sortedList = new ArrayList<AbstractEvent>();
+        for (int i = 0; i < events.size(); i++){
+            if (events.get(i).getFrequency() == frequency) {
+                sortedList.add(events.get(i));  
+            }
+        }
+
         Comparator<AbstractEvent> comparator = (event1, event2) -> event1.getSeverityLevel() - event2.getSeverityLevel();
         sortedList.sort(comparator);
         return sortedList;
     }
 
-    public Step generateNextStep(Profile p) {
+    public static Step generateNextStep(Profile p) {
         ArrayList<AbstractEvent> events = p.getEvents();
         AbstractEvent curNextEvent = null;
         AbstractEvent curEvent;
@@ -157,18 +212,23 @@ public class EventController {
         return null;
     }
     
-    public void displayEventSummary(Profile p) { //Display every event's attributes
-        ArrayList<AbstractEvent> events = p.getEvents();
-        System.out.println("Displaying Event Summary:");
-        for (int i = 0; i < events.size(); i++) {
-            AbstractEvent event = events.get(i);
-            System.out.println("Name: " + event.getEventName());
-            System.out.println("Duration: " + event.getStartTime() + " - " + event.getEndTime());
-            System.out.println("Dates: " + event.getStartDate() + " - " + event.getEndDate());
-            System.out.println("Type: " + event.getEventType());
-            System.out.println("Severity: " + event.getSeverityLevel());
-            System.out.println("Frequency: " + event.getFrequency());
-            System.out.println();
+    public static int displayEventSummary(ArrayList<AbstractEvent> eventsList) { //Display every event's attributes in eventsList
+        if (eventsList.size() == 0) {
+            System.out.println("There are no events to display.");
         }
+        else {
+            System.out.println("Displaying Event Summary:");
+            for (int i = 0; i < eventsList.size(); i++) {
+                AbstractEvent event = eventsList.get(i);
+                System.out.println("Name: " + event.getEventName());
+                System.out.println("Duration: " + event.getStartTime() + " - " + event.getEndTime());
+                System.out.println("Dates: " + event.getStartDate() + " - " + event.getEndDate());
+                System.out.println("Type: " + event.getEventType());
+                System.out.println("Severity: " + event.getSeverityLevel());
+                System.out.println("Frequency: " + event.getFrequency());
+                System.out.println();
+            }
+        }
+        return 0;
     }
 }
