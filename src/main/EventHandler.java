@@ -1,27 +1,27 @@
 package main;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.security.InvalidParameterException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.Scanner;
+import javafx.util.Pair;
 
 public class EventHandler {
 
-    public static boolean addEvent(Profile p, String eventName, LocalTime startTime, LocalTime endTime, Date startDate, Date endDate, 
-                    String eventType, int severityLevel, AbstractEvent.Frequencies frequency) throws InvalidParameterException {
+    public static int addEvent(Profile p, String eventName, LocalTime startTime, LocalTime endTime, Date startDate, Date endDate, 
+                    String eventType, int severityLevel, AbstractEvent.Frequencies frequency) {
 
         if (eventName.length() <= 0 || eventName.length() > 50) {
-            throw new InvalidParameterException("Event name needs to be between 1 and 50 characters");
+            return -1;
         }
         if (eventType.length() <= 0 | eventType.length() > 50){
-            throw new InvalidParameterException("Event type needs to be between 1 and 50 characters");
+            return -2;
         }
         if (severityLevel < 0 || severityLevel > 5) {
-            throw new InvalidParameterException("Event severity needs to be between 0 and 5");
+            return -3;
         }
         
         ArrayList<AbstractEvent> events = p.getEvents();
@@ -32,14 +32,14 @@ public class EventHandler {
                         .frequency(frequency).build();
 
         events.add(newEvent);
-        return true;
+        return 0;
     }
 
-    public static boolean editEvent(Profile p, AbstractEvent e) throws InvalidParameterException {
+    public static int editEvent(Profile p, AbstractEvent e) {
         ArrayList<AbstractEvent> events = p.getEvents();
 
         if (! events.contains(e)) {
-            throw new InvalidParameterException("The event does not exist in that profile");
+            return -4;
         }
 
         for (int i = 0; i < events.size(); i++) {
@@ -87,38 +87,37 @@ public class EventHandler {
                 }
                 else {
                     scanner.close();
-                    return false;
+                    return -7;
                 }
                 scanner.close();
-                return true;
+                return 0;
             }
         }
-        return false;
+        return -4;
     }
 
-    public static boolean removeEvent(Profile p, int eventId) throws InvalidParameterException {
+    public static int removeEvent(Profile p, int eventId) {
         ArrayList<AbstractEvent> events = p.getEvents();
 
         if (eventId < 0 || eventId >= events.size()) {
-            throw new InvalidParameterException("No event exists with ID " + eventId);
+            return -5;
         }
 
         events.remove(eventId);
-        return true;
+        return 0;
     }
 
-    public static boolean addMonitoredEvent(Profile p, String eventName, LocalTime startTime, LocalTime endTime, Date startDate,
-                     Date endDate, String eventType, Boolean isComplete, int severityLevel, AbstractEvent.Frequencies frequency) 
-                     throws InvalidParameterException {
+    public static int addMonitoredEvent(Profile p, String eventName, LocalTime startTime, LocalTime endTime, Date startDate,
+                     Date endDate, String eventType, Boolean isComplete, int severityLevel, AbstractEvent.Frequencies frequency) {
         
         if (eventName.length() <= 0 || eventName.length() > 50) {
-            throw new InvalidParameterException("Event name needs to be between 1 and 50 characters");
+            return -1;
         }
         if (eventType.length() <= 0 | eventType.length() > 50){
-            throw new InvalidParameterException("Event type needs to be between 1 and 50 characters");
+            return -2;
         }
         if (severityLevel < 0 || severityLevel > 5) {
-            throw new InvalidParameterException("Event severity needs to be between 0 and 5");
+            return -3;
         }
         
         ArrayList<AbstractEvent> events = p.getEvents();
@@ -129,27 +128,27 @@ public class EventHandler {
                         .severityLevel(severityLevel).frequency(frequency).build();
 
         events.add(newEvent);
-        return true;
+        return 0;
     }
 
-    public static boolean addStep(MonitoredEvent m, Step s) {
+    public static int addStep(MonitoredEvent m, Step s) {
         ArrayList<Step> steps = m.getSteps();
         int newStepNum = m.getNextStepNumber();
         m.setNextStepNumber(newStepNum + 1);
         steps.add(s);
-        return true;
+        return 0;
     }
 
-    public static AbstractEvent searchForEventSeverity(Profile p, int level) throws InvalidParameterException {
+    public static Pair<AbstractEvent, Integer> searchForEventSeverity(Profile p, int level) {
 
         if (level < 0 || level > 5) {
-            throw new InvalidParameterException("Event severity needs to be between 0 and 5");
+            return new Pair<AbstractEvent,Integer>(null, -3);
         }
         
         ArrayList<AbstractEvent> events = p.getEvents();
         for(int i = 0; i < events.size(); i++){
             if (events.get(i).getSeverityLevel() == level){
-                return events.get(i);
+                return new Pair<AbstractEvent, Integer> (events.get(i), 0);
             }
         }
         return null;
@@ -165,26 +164,28 @@ public class EventHandler {
         return null;
     }
     
-    public static AbstractEvent searchforEventType(Profile p, String type) throws InvalidParameterException {
+    public static Pair<AbstractEvent, Integer> searchForEventType(Profile p, String type) {
 
         if (type.length() <= 0 | type.length() > 50){
-            throw new InvalidParameterException("Event type needs to be between 1 and 50 characters");
+            return new Pair<AbstractEvent,Integer>(null, -2);
         }
 
         ArrayList<AbstractEvent> events = p.getEvents();
         for(int i = 0; i < events.size(); i++){
             if (events.get(i).getEventType() == type){
-                return events.get(i);
+                return new Pair<AbstractEvent, Integer> (events.get(i), 0);
             }
         }
         return null;
     }
 
-    public static ArrayList<AbstractEvent> sortBySeverity(Profile p) {
+    public static ArrayList<AbstractEvent> sortBySeverity(Profile p, AbstractEvent.Frequencies frequency) {
         ArrayList<AbstractEvent> events = p.getEvents();
         ArrayList<AbstractEvent> sortedList = new ArrayList<AbstractEvent>();
         for (int i = 0; i < events.size(); i++){
-            sortedList.add(events.get(i));
+            if (events.get(i).getFrequency() == frequency) {
+                sortedList.add(events.get(i));  
+            }
         }
 
         Comparator<AbstractEvent> comparator = (event1, event2) -> event1.getSeverityLevel() - event2.getSeverityLevel();
@@ -211,18 +212,23 @@ public class EventHandler {
         return null;
     }
     
-    public static void displayEventSummary(Profile p) { //Display every event's attributes
-        ArrayList<AbstractEvent> events = p.getEvents();
-        System.out.println("Displaying Event Summary:");
-        for (int i = 0; i < events.size(); i++) {
-            AbstractEvent event = events.get(i);
-            System.out.println("Name: " + event.getEventName());
-            System.out.println("Duration: " + event.getStartTime() + " - " + event.getEndTime());
-            System.out.println("Dates: " + event.getStartDate() + " - " + event.getEndDate());
-            System.out.println("Type: " + event.getEventType());
-            System.out.println("Severity: " + event.getSeverityLevel());
-            System.out.println("Frequency: " + event.getFrequency());
-            System.out.println();
+    public static int displayEventSummary(ArrayList<AbstractEvent> eventsList) { //Display every event's attributes in eventsList
+        if (eventsList.size() == 0) {
+            System.out.println("There are no events to display.");
         }
+        else {
+            System.out.println("Displaying Event Summary:");
+            for (int i = 0; i < eventsList.size(); i++) {
+                AbstractEvent event = eventsList.get(i);
+                System.out.println("Name: " + event.getEventName());
+                System.out.println("Duration: " + event.getStartTime() + " - " + event.getEndTime());
+                System.out.println("Dates: " + event.getStartDate() + " - " + event.getEndDate());
+                System.out.println("Type: " + event.getEventType());
+                System.out.println("Severity: " + event.getSeverityLevel());
+                System.out.println("Frequency: " + event.getFrequency());
+                System.out.println();
+            }
+        }
+        return 0;
     }
 }
