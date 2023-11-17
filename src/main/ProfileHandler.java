@@ -112,14 +112,20 @@ public class ProfileHandler {
             return -102;
         }
 
+        PersistenceFactory pf = new PersistenceFactory();
+        Persistence persistence = pf.getPersistent(persistenceType.JsonFile);
+
+        //If the username desired is already taken return code -106
+        if(persistence.load(username) != null)
+        {
+            return -106;
+        }
+
         //Hashing the entered password in hashPassword may throw an exception
         try 
         {
             String hashedPassword = hashPassword(unhashedPassword);
             Profile newProfile = new Profile(username, hashedPassword);
-            
-            PersistenceFactory pf = new PersistenceFactory();
-            Persistence persistence = pf.getPersistent(persistenceType.JsonFile);
 
             //If the system fails to save the new profile, return code -105
             if(!persistence.save(newProfile))
@@ -155,11 +161,17 @@ public class ProfileHandler {
             return -101;
         }
 
-        //Update the currentProfile's username
-        currentProfile.setUsername(newUserName);
-
         PersistenceFactory pf = new PersistenceFactory();
         Persistence persistence = pf.getPersistent(persistenceType.JsonFile);
+
+        //If the username desired is already taken return code -106
+        if(persistence.load(newUserName) != null)
+        {
+            return -106;
+        }
+
+        //Update the currentProfile's username
+        currentProfile.setUsername(newUserName);
 
         //If the system fails to save the new profile, revert the currentProfile's username and return code -105
         if(!persistence.save(currentProfile))
