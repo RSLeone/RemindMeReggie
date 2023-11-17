@@ -10,10 +10,12 @@ public class ProfileHandler {
     private static Profile currentProfile;
 
     //Revisit this after Andrew finishes presistence
-    public static boolean login(String username, String password)
+    public static int login(String username, String password)
     {
         //Search use persistence.load() to get the profile witht the passed in username and make sure the password is valid
-        /*Profile loadedProfile = persistence.load();
+        PersistenceFactory pf = new PersistenceFactory();
+        pf.getPersistent(persistenceType.LocalFile)
+        Profile loadedProfile = persistence.load();
         try
         {
             if(same password entered) 
@@ -32,7 +34,7 @@ public class ProfileHandler {
 
         */
  
-        return true;
+        return 0;
 
     }
 
@@ -46,7 +48,7 @@ public class ProfileHandler {
     }
 
     //Revisit this after Andrew finished presistence
-    public static boolean createNewProfile(String username, String unhashedPassword)
+    public static int createNewProfile(String username, String unhashedPassword)
     {
         try 
         {
@@ -63,7 +65,7 @@ public class ProfileHandler {
     }
 
     //Revisit
-    public static boolean editCurrentProfileUsername(String newUserName)
+    public static int editCurrentProfileUsername(String newUserName)
     {
         //Save the profile using persistence.save()
 
@@ -76,7 +78,7 @@ public class ProfileHandler {
     *       otherwise prints that the new password could not be set
     * @param newPassword - the password to be hashed then set
     */
-    public static boolean editCurrentProfilePassword(String newPassword) 
+    public static int editCurrentProfilePassword(String newPassword) 
     {
         
         try
@@ -93,6 +95,11 @@ public class ProfileHandler {
         }
         
         return true;
+
+    }
+
+    public static boolean deleteCurrentProfile()
+    {
 
     }
 
