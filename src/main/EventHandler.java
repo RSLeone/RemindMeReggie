@@ -1,12 +1,8 @@
 package main;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.Date;
-import java.util.Scanner;
 import javafx.util.Pair;
 
 public class EventHandler {
@@ -35,75 +31,112 @@ public class EventHandler {
         return 0;
     }
 
-    public static int editEvent(Profile p, AbstractEvent e) {
+    public static int editEventName(Profile p, AbstractEvent e, String name) {
+        ArrayList<AbstractEvent> events = p.getEvents();
+
+        if (! events.contains(e)) {
+            return -4;
+        }
+        if (name.length() <= 0 || name.length() > 50) {
+            return -1;
+        }
+
+
+        e.setEventName(name);
+        return 0;
+    }
+
+    public static int editEventStartTime(Profile p, AbstractEvent e, LocalTime startTime) {
         ArrayList<AbstractEvent> events = p.getEvents();
 
         if (! events.contains(e)) {
             return -4;
         }
 
-        for (int i = 0; i < events.size(); i++) {
-            if (events.get(i) == e) {
-                AbstractEvent event = events.get(i);
-                Scanner scanner = new Scanner(System.in);
-                System.out.println("Please select the attribute to edit: ");
-                System.out.println("1: Name, 2: Start Time, 3: End Time, 4: Start Date, 5: End Date, 6: Severity, 7: Frequency");
-                String inputStr = scanner.nextLine();
-                int input1 = Integer.valueOf(inputStr);
-                System.out.println("Please input what you want to change it to: ");
-                inputStr = scanner.nextLine();
-                DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-
-                if (input1 == 1){
-                    event.setEventName(inputStr);
-                }
-                else if (input1 == 2){
-                    event.setStartTime(LocalTime.parse(inputStr));
-                }
-                else if (input1 == 3){
-                    event.setEndTime(LocalTime.parse(inputStr));
-                }
-                else if (input1 == 4){
-                    try {
-                        event.setStartDate(format.parse(inputStr));
-                    } catch (ParseException e1) {
-                        System.out.println("Incorrect date format - MM/DD/YYYY");
-                        e1.printStackTrace();
-                    }
-                }
-                else if (input1 == 5){
-                    try {
-                        event.setEndDate(format.parse(inputStr));
-                    } catch (ParseException e1) {
-                        System.out.println("Incorrect date format - MM/DD/YYYY");
-                        e1.printStackTrace();
-                    }
-                }
-                else if (input1 == 6){
-                    event.setSeverityLevel(Integer.parseInt(inputStr));
-                }
-                else if (input1 == 7){
-                    event.setFrequency(AbstractEvent.Frequencies.valueOf(inputStr));
-                }
-                else {
-                    scanner.close();
-                    return -7;
-                }
-                scanner.close();
-                return 0;
-            }
-        }
-        return -4;
+        e.setStartTime(startTime);
+        return 0;
     }
 
-    public static int removeEvent(Profile p, int eventId) {
+    public static int editEventEndTime(Profile p, AbstractEvent e, LocalTime endTime) {
         ArrayList<AbstractEvent> events = p.getEvents();
 
-        if (eventId < 0 || eventId >= events.size()) {
-            return -5;
+        if (! events.contains(e)) {
+            return -4;
         }
 
-        events.remove(eventId);
+        e.setEndTime(endTime);
+        return 0;
+    }
+
+    public static int editEventStartDate(Profile p, AbstractEvent e, Date startDate) {
+        ArrayList<AbstractEvent> events = p.getEvents();
+
+        if (! events.contains(e)) {
+            return -4;
+        }
+
+        e.setStartDate(startDate);
+        return 0;
+    }
+
+    public static int editEventEndDate(Profile p, AbstractEvent e, Date endDate) {
+        ArrayList<AbstractEvent> events = p.getEvents();
+
+        if (! events.contains(e)) {
+            return -4;
+        }
+
+        e.setEndDate(endDate);
+        return 0;
+    }
+
+    public static int editEventType(Profile p, AbstractEvent e, String type) {
+        ArrayList<AbstractEvent> events = p.getEvents();
+
+        if (! events.contains(e)) {
+            return -4;
+        }
+        if (type.length() <= 0 | type.length() > 50){
+            return -2;
+        }
+
+        e.setEventType(type);
+        return 0;
+    }
+
+    public static int editEventSeverity(Profile p, AbstractEvent e, int severity) {
+        ArrayList<AbstractEvent> events = p.getEvents();
+
+        if (! events.contains(e)) {
+            return -4;
+        }
+        if (severity < 0 || severity > 5) {
+            return -3;
+        }
+
+        e.setSeverityLevel(severity);
+        return 0;
+    }
+
+    public static int editEventFrequency(Profile p, AbstractEvent e, AbstractEvent.Frequencies frequency) {
+        ArrayList<AbstractEvent> events = p.getEvents();
+
+        if (! events.contains(e)) {
+            return -4;
+        }
+
+        e.setFrequency(frequency);
+        return 0;
+    }
+
+    public static int removeEvent(Profile p, AbstractEvent e) {
+        ArrayList<AbstractEvent> events = p.getEvents();
+
+        if (! events.contains(e)) {
+            return -4;
+        }
+
+        events.remove(e);
         return 0;
     }
 
@@ -215,6 +248,7 @@ public class EventHandler {
     public static int displayEventSummary(ArrayList<AbstractEvent> eventsList) { //Display every event's attributes in eventsList
         if (eventsList.size() == 0) {
             System.out.println("There are no events to display.");
+            return -5;
         }
         else {
             System.out.println("Displaying Event Summary:");
