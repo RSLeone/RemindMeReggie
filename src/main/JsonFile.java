@@ -16,6 +16,12 @@ public class JsonFile extends Persistence{
 
         String jsonString = gson.toJson(p);
 
+        // creates directory if it does not exist
+        File pathAsFile = new File(getLocation());
+        if (!Files.exists(Paths.get(getLocation()))) {
+            pathAsFile.mkdir();
+        }
+
         try (FileWriter writer = new FileWriter(getLocation() + '/' + p.getUsername() + ".json")) {
             // Write the string to the file
             writer.write(jsonString);
