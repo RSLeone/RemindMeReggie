@@ -145,7 +145,7 @@ public class ProfileHandler {
     }
 
     /**
-     * Attempts to update the currentProfile's username and save the profile
+     * Attempts to update the currentProfile's username, save the profile, and delete the file that uses the old username
      * @param newUserName - the username that the currentProfile's username should be updated to
      * @return 0 if the currentProfile's username was updated and was saved successfully, otherwise a negative integer that corresponds to what went wrong
      */
@@ -180,7 +180,14 @@ public class ProfileHandler {
             return -105;
         }
 
-        //The system update the currentProfile's username and saved the currentProfile successfullly so return code 0
+        //If the current profile with the updated username could be saved, need to delete the old file that uses the old username
+        if(!persistence.delete(previousUsername))
+        {
+            //If the previousUsername version of the profile could not be deleted return code -107
+            return -107;
+        }
+
+        //The system update the currentProfile's username, saved the currentProfile, and delted the old username file successfullly so return code 0
         return 0;
     }
 
@@ -191,6 +198,13 @@ public class ProfileHandler {
      */
     public static int editCurrentProfilePassword(String newPassword) 
     {
+
+        //If the newPassword has an invalid length return code
+        if(newPassword.length() < 8)
+        {
+            return -102;
+        }
+
         //Hashing the entered password in hashPassword may throw an exception
         try
         {
