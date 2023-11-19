@@ -221,12 +221,16 @@ public class ProfileHandler {
 
     }
 
+    /**
+     * Attemps to delete the current profile
+     * @return true if the profile was sucessfully delted, otherwise false
+     */
     public static boolean deleteCurrentProfile()
     {
         PersistenceFactory pf = new PersistenceFactory();
         Persistence persistence = pf.getPersistent(persistenceType.JsonFile);
-        
-        return persistence.delete(currentProfile);
+    
+        return persistence.delete(currentProfile.getUsername());
     }
 
     //Getter for currentProfile
