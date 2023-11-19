@@ -31,6 +31,8 @@ public class JsonFileTest {
 
     @Test
     public void testProfileLoad(){
+        testProfileSave();
+
         Profile p = persistence.load(profile.getUsername());
 
         assertEquals(p.getUsername(), profile.getUsername());
@@ -44,5 +46,14 @@ public class JsonFileTest {
         Profile p = persistence.load("I DO NOT EXIST");
 
         assertEquals(p, null);
+    }
+
+    @Test
+    public void testDeleteProfile(){
+        testProfileSave();
+
+        boolean sucess = persistence.delete(profile.getUsername());
+
+        assertEquals(sucess, true);
     }
 }
