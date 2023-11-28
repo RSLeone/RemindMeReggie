@@ -184,7 +184,7 @@ public class EventHandler {
                 return new Pair<AbstractEvent, Integer> (events.get(i), 0);
             }
         }
-        return null;
+        return new Pair<AbstractEvent, Integer> (null, 0);
     }
 
     public static AbstractEvent searchForEventDate(Profile p, Date date) {
@@ -209,7 +209,7 @@ public class EventHandler {
                 return new Pair<AbstractEvent, Integer> (events.get(i), 0);
             }
         }
-        return null;
+        return new Pair<AbstractEvent, Integer> (null, 0);
     }
 
     public static ArrayList<AbstractEvent> sortBySeverity(Profile p, AbstractEvent.Frequencies frequency) {
@@ -264,5 +264,25 @@ public class EventHandler {
             }
         }
         return 0;
+    }
+
+    public static Pair<ArrayList<AbstractEvent>, Integer> viewPastEvents(Profile p, Date startRange, Date endRange) {
+        ArrayList<AbstractEvent> events = p.getEvents();
+        Date start;
+        Date end;
+        ArrayList<AbstractEvent> pastEvents = new ArrayList<AbstractEvent>();
+
+        for(int i = 0; i < events.size(); i++){
+            start = events.get(i).getStartDate();
+            end = events.get(i).getEndDate();
+            if ((start.compareTo(startRange) >= 0) && end.compareTo(endRange) <= 0){
+                pastEvents.add(events.get(i));
+            }
+        }
+        
+        if (pastEvents.size() == 0) {
+            return new Pair<ArrayList<AbstractEvent>,Integer>(null, -5);
+        }
+        return new Pair<ArrayList<AbstractEvent>,Integer>(pastEvents, 0);
     }
 }
