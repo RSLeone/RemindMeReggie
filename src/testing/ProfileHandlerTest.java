@@ -11,6 +11,7 @@ import main.PersistenceFactory;
 import main.Profile;
 import main.ProfileHandler;
 import main.PersistenceFactory.persistenceType;
+import main.Returns;
 
 public class ProfileHandlerTest 
 {
@@ -30,8 +31,8 @@ public class ProfileHandlerTest
     @Test
     public void testCreatingValidProfile()
     {
-        int returnCode = ProfileHandler.createNewProfile("TestProfile", "password");
-        assertEquals(returnCode, 0);
+        Returns returnVal = ProfileHandler.createNewProfile("TestProfile", "password");
+        assertEquals(returnVal.getReturnCode(), 0);
     
     }
 
@@ -41,8 +42,8 @@ public class ProfileHandlerTest
     @Test
     public void testInvalidUsernameWhenCreatingProfile()
     {
-        int returnCode = ProfileHandler.createNewProfile("", "password");
-        assertEquals(returnCode, -101);
+        Returns returnVal = ProfileHandler.createNewProfile("", "password");
+        assertEquals(returnVal.getReturnCode(), -101);
     }
 
     /**
@@ -51,8 +52,8 @@ public class ProfileHandlerTest
     @Test
     public void testTooShortPasswordWhenCreatingProfile()
     {
-        int returnCode = ProfileHandler.createNewProfile("TestProfile", "shortPW");
-        assertEquals(returnCode, -102);
+        Returns returnVal = ProfileHandler.createNewProfile("TestProfile", "shortPW");
+        assertEquals(returnVal.getReturnCode(), -102);
     }
 
     /**
@@ -61,8 +62,8 @@ public class ProfileHandlerTest
     @Test
     public void testEmptyPasswordWhenCreatingProfile()
     {
-        int returnCode = ProfileHandler.createNewProfile("TestProfile", "");
-        assertEquals(returnCode, -102);
+        Returns returnVal = ProfileHandler.createNewProfile("TestProfile", "");
+        assertEquals(returnVal.getReturnCode(), -102);
     }
 
     /**
@@ -73,8 +74,8 @@ public class ProfileHandlerTest
     {
         ProfileHandler.createNewProfile("TestProfile", "password1");
 
-        int returnCode = ProfileHandler.createNewProfile("TestProfile", "password2");
-        assertEquals(returnCode, -106);
+        Returns returnVal = ProfileHandler.createNewProfile("TestProfile", "password2");
+        assertEquals(returnVal.getReturnCode(), -106);
     }
 
     /**
@@ -85,8 +86,8 @@ public class ProfileHandlerTest
     {
         ProfileHandler.createNewProfile("TestProfile", "password");
 
-        int returnCode = ProfileHandler.login("TestProfile", "password");
-        assertEquals(returnCode, 0);
+        Returns returnVal = ProfileHandler.login("TestProfile", "password");
+        assertEquals(returnVal.getReturnCode(), 0);
     }
 
     /**
@@ -97,8 +98,8 @@ public class ProfileHandlerTest
     {
         ProfileHandler.createNewProfile("TestProfile", "password");
 
-        int returnCode = ProfileHandler.login("", "password");
-        assertEquals(returnCode, -101);
+        Returns returnVal = ProfileHandler.login("", "password");
+        assertEquals(returnVal.getReturnCode(), -101);
     }
 
     /**
@@ -109,8 +110,8 @@ public class ProfileHandlerTest
     {
         ProfileHandler.createNewProfile("TestProfile", "password");
 
-        int returnCode = ProfileHandler.login("TestProfile", "");
-        assertEquals(returnCode, -102);
+        Returns returnVal = ProfileHandler.login("TestProfile", "");
+        assertEquals(returnVal.getReturnCode(), -102);
     }
 
     /**
@@ -119,8 +120,8 @@ public class ProfileHandlerTest
     @Test
     public void testLogInNonexistantProfile()
     {
-        int returnCode = ProfileHandler.login("TestProfile", "password");
-        assertEquals(returnCode, -104);
+        Returns returnVal = ProfileHandler.login("TestProfile", "password");
+        assertEquals(returnVal.getReturnCode(), -104);
     }
 
     /**
@@ -131,8 +132,8 @@ public class ProfileHandlerTest
     {
         ProfileHandler.createNewProfile("TestProfile", "password");
 
-        int returnCode = ProfileHandler.login("TestProfile", "passwor");
-        assertEquals(returnCode, -104);
+        Returns returnVal = ProfileHandler.login("TestProfile", "passwor");
+        assertEquals(returnVal.getReturnCode(), -104);
     }
 
     /**
@@ -157,8 +158,8 @@ public class ProfileHandlerTest
         ProfileHandler.createNewProfile("TestProfile", "password");
         ProfileHandler.login("TestProfile", "password");
 
-        int returnCode = ProfileHandler.editCurrentProfileUsername("EditedTestProfile");
-        assertEquals(returnCode, 0);
+        Returns returnVal = ProfileHandler.editCurrentProfileUsername("EditedTestProfile");
+        assertEquals(returnVal.getReturnCode(), 0);
 
         PersistenceFactory pf = new PersistenceFactory();
         Persistence p = pf.getPersistent(persistenceType.JsonFile);
@@ -174,8 +175,8 @@ public class ProfileHandlerTest
         ProfileHandler.createNewProfile("TestProfile", "password");
         ProfileHandler.login("TestProfile", "password");
 
-        int returnCode = ProfileHandler.editCurrentProfileUsername("");
-        assertEquals(returnCode, -101);
+        Returns returnVal = ProfileHandler.editCurrentProfileUsername("");
+        assertEquals(returnVal.getReturnCode(), -101);
     }
 
     /**
@@ -188,8 +189,8 @@ public class ProfileHandlerTest
         ProfileHandler.createNewProfile("TakenUsername", "password2");
         ProfileHandler.login("TestProfile", "password1");
 
-        int returnCode = ProfileHandler.editCurrentProfileUsername("TakenUsername");
-        assertEquals(returnCode, -106);
+        Returns returnVal = ProfileHandler.editCurrentProfileUsername("TakenUsername");
+        assertEquals(returnVal.getReturnCode(), -106);
 
         PersistenceFactory pf = new PersistenceFactory();
         Persistence p = pf.getPersistent(persistenceType.JsonFile);
@@ -205,8 +206,8 @@ public class ProfileHandlerTest
         ProfileHandler.createNewProfile("TestProfile", "password");
         ProfileHandler.login("TestProfile", "password");
 
-        int returnCode = ProfileHandler.editCurrentProfilePassword("newPW1234567");
-        assertEquals(returnCode, 0);
+        Returns returnVal = ProfileHandler.editCurrentProfilePassword("newPW1234567");
+        assertEquals(returnVal.getReturnCode(), 0);
     }
 
     /**
@@ -218,8 +219,8 @@ public class ProfileHandlerTest
         ProfileHandler.createNewProfile("TestProfile", "password");
         ProfileHandler.login("TestProfile", "password");
 
-        int returnCode = ProfileHandler.editCurrentProfilePassword("shortPW");
-        assertEquals(returnCode, -102);
+        Returns returnVal = ProfileHandler.editCurrentProfilePassword("shortPW");
+        assertEquals(returnVal.getReturnCode(), -102);
     }
 
     /**
@@ -231,8 +232,8 @@ public class ProfileHandlerTest
         ProfileHandler.createNewProfile("TestProfile", "password");
         ProfileHandler.login("TestProfile", "password");
 
-        int returnCode = ProfileHandler.editCurrentProfilePassword("");
-        assertEquals(returnCode, -102);
+        Returns returnVal = ProfileHandler.editCurrentProfilePassword("");
+        assertEquals(returnVal.getReturnCode(), -102);
     }
 
     /**
