@@ -184,7 +184,7 @@ public class EventHandler {
                 return new Pair<AbstractEvent, Integer> (events.get(i), 0);
             }
         }
-        return null;
+        return new Pair<AbstractEvent, Integer> (null, 0);
     }
 
     public static AbstractEvent searchForEventDate(Profile p, Date date) {
@@ -209,7 +209,7 @@ public class EventHandler {
                 return new Pair<AbstractEvent, Integer> (events.get(i), 0);
             }
         }
-        return null;
+        return new Pair<AbstractEvent, Integer> (null, 0);
     }
 
     public static ArrayList<AbstractEvent> sortBySeverity(Profile p, AbstractEvent.Frequencies frequency) {
