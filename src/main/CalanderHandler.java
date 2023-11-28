@@ -23,6 +23,10 @@ public class CalanderHandler {
                     VEvent event = new VEvent(startDateTime, endDateTime, e.getEventName());
                     calendar.getComponents().add(event);
                 }
+
+                if(e.getFrequency() == AbstractEvent.Frequencies.DAILY){
+                    java.time.Duration duration = Duration.between(e.getStartTime(), e.getEndTime());
+                }
                 
             }
         }
