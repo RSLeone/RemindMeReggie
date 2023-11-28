@@ -7,6 +7,7 @@ import main.Persistence;
 import main.PersistenceFactory;
 import main.Profile;
 import main.PersistenceFactory.persistenceType;
+import main.Returns;
 
 public class ProfileHandler {
     
@@ -19,19 +20,19 @@ public class ProfileHandler {
      * @param password - the password of the profile to log in to
      * @return 0 if a successful log in occured, otherwise a negative integer that corresponds to what went wrong
      */
-    public static int login(String username, String password)
+    public static Returns login(String username, String password)
     {
 
         //If the username is invalid return code -101
         if(username.length() <= 0)
         {
-            return -101;
+            return Returns.INVALID_USERNAME;
         }
 
         //If the password is invalid return code -102
         if(password.length() <= 0)
         {
-            return -102;
+            return Returns.INVALID_PASSWORD;
         }
 
         //Use persistence.load() to get the profile with the passed in username
@@ -42,7 +43,7 @@ public class ProfileHandler {
         //If the loadedProfile is null beacuse no Profile with the username passed in exists, return code -104
         if(loadedProfile == null)
         {
-            return -104;
+            return Returns.COULD_NOT_LOGIN_WITH_ENTERED_CREDENTAILS;
         }
         
         //Hashing the entered password in isSamePassowrd may throw an exception
@@ -55,17 +56,17 @@ public class ProfileHandler {
             //If the entered password does not match the password for the username, return code -104
             else
             {
-                return -104;
+                return Returns.COULD_NOT_LOGIN_WITH_ENTERED_CREDENTAILS;
             }
         }
         //isSamePassword failed to hash the entered password so return code -103
         catch(NoSuchAlgorithmException e)
         {
-            return -103;
+            return Returns.COULD_NOT_HASH_PASSWORD;
         }
  
         //Successful login so return code 0
-        return 0;
+        return Returns.SUCCESS;
 
     }
 
@@ -98,18 +99,18 @@ public class ProfileHandler {
      * @param unhashedPassword - the password of the profile to be created
      * @return 0 if a successful profile creation occured, otherwise a negative integer that corresponds to what went wrong
      */
-    public static int createNewProfile(String username, String unhashedPassword)
+    public static Returns createNewProfile(String username, String unhashedPassword)
     {
 
         //If the username is invalid return code -101
         if(username.length() <= 0)
         {
-            return -101;
+            return Returns.INVALID_USERNAME;
         }
         //If the password is invalid return code -102
         if(unhashedPassword.length() < 8)
         {
-            return -102;
+            return Returns.INVALID_PASSWORD;
         }
 
         PersistenceFactory pf = new PersistenceFactory();
@@ -118,7 +119,7 @@ public class ProfileHandler {
         //If the username desired is already taken return code -106
         if(persistence.load(username) != null)
         {
-            return -106;
+            return Returns.USERNAME_ALREADY_TAKEN;
         }
 
         //Hashing the entered password in hashPassword may throw an exception
@@ -130,18 +131,18 @@ public class ProfileHandler {
             //If the system fails to save the new profile, return code -105
             if(!persistence.save(newProfile))
             {
-                return -105;
+                return Returns.COULD_NOT_SAVE_PROFILE;
             }
 
         }
         //hashPassword failed to hash the entered password so return code -103
         catch(NoSuchAlgorithmException e)
         {
-            return -103;
+            return Returns.COULD_NOT_HASH_PASSWORD;
         }
 
         //The new profile was created and saved sucessfully so return code 0
-        return 0;
+        return Returns.SUCCESS;
     }
 
     /**
@@ -149,7 +150,7 @@ public class ProfileHandler {
      * @param newUserName - the username that the currentProfile's username should be updated to
      * @return 0 if the currentProfile's username was updated and was saved successfully, otherwise a negative integer that corresponds to what went wrong
      */
-    public static int editCurrentProfileUsername(String newUserName)
+    public static Returns editCurrentProfileUsername(String newUserName)
     {
 
         //Need to save the previous username in case the save fails
@@ -158,7 +159,7 @@ public class ProfileHandler {
         //If the newUsername is invalid return code -101
         if(newUserName.length() <= 0)
         {
-            return -101;
+            return Returns.INVALID_USERNAME;
         }
 
         PersistenceFactory pf = new PersistenceFactory();
@@ -167,7 +168,7 @@ public class ProfileHandler {
         //If the username desired is already taken return code -106
         if(persistence.load(newUserName) != null)
         {
-            return -106;
+            return Returns.USERNAME_ALREADY_TAKEN;
         }
 
         //Update the currentProfile's username
@@ -177,18 +178,18 @@ public class ProfileHandler {
         if(!persistence.save(currentProfile))
         {
             currentProfile.setUsername(previousUsername);
-            return -105;
+            return Returns.COULD_NOT_SAVE_PROFILE;
         }
 
         //If the current profile with the updated username could be saved, need to delete the old file that uses the old username
         if(!persistence.delete(previousUsername))
         {
             //If the previousUsername version of the profile could not be deleted return code -107
-            return -107;
+            return Returns.OLD_USERNAME_FILE_NOT_DELETED;
         }
 
         //The system update the currentProfile's username, saved the currentProfile, and delted the old username file successfullly so return code 0
-        return 0;
+        return Returns.SUCCESS;
     }
 
     /**
@@ -196,13 +197,13 @@ public class ProfileHandler {
      * @param newPassword - the new password to be hashed and update the currentProfile
      * @return 0 if the the currentProfile's hashedPassword was updated and the currentProfile was saved sucessfully, otherwise a negative integer that corresponds to what went wrong
      */
-    public static int editCurrentProfilePassword(String newPassword) 
+    public static Returns editCurrentProfilePassword(String newPassword) 
     {
 
         //If the newPassword has an invalid length return code
         if(newPassword.length() < 8)
         {
-            return -102;
+            return Returns.INVALID_PASSWORD;
         }
 
         //Hashing the entered password in hashPassword may throw an exception
@@ -221,17 +222,17 @@ public class ProfileHandler {
             if(!persistence.save(currentProfile))
             {
                 currentProfile.setHashedPassword(previousHashedPassword);
-                return -105;
+                return Returns.COULD_NOT_SAVE_PROFILE;
             }
         }
         //hashPassword failed to hash the entered password so return code -103
         catch(NoSuchAlgorithmException e)
         {
-            return -103;
+            return Returns.COULD_NOT_HASH_PASSWORD;
         }
         
         //The currentProfile's hashedPassword was updated and the currentProfile was saved sucessfully so return code 0
-        return 0;
+        return Returns.SUCCESS;
 
     }
 
