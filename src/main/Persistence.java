@@ -1,23 +1,14 @@
 package main;
 
 public abstract class Persistence {
-    private UserInterfaceController userInterFaceController;
-
     private String location;
 
     public abstract boolean save(Profile p);
     public abstract Profile load(String username);
+    public abstract boolean delete(String username);
 
     Persistence(){
         setDefaultLocation();
-    }
-
-    public UserInterfaceController getUserInterfaceController(){
-        return this.userInterFaceController;
-    }
-
-    public void setUserInterfaceController(UserInterfaceController u){
-        this.userInterFaceController = u;
     }
 
     public void setLocation(String location){

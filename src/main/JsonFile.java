@@ -1,4 +1,5 @@
 package main;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,6 +16,12 @@ public class JsonFile extends Persistence{
 
         String jsonString = gson.toJson(p);
 
+        // creates directory if it does not exist
+        File pathAsFile = new File(getLocation());
+        if (!Files.exists(Paths.get(getLocation()))) {
+            pathAsFile.mkdir();
+        }
+
         try (FileWriter writer = new FileWriter(getLocation() + '/' + p.getUsername() + ".json")) {
             // Write the string to the file
             writer.write(jsonString);
@@ -23,6 +30,7 @@ public class JsonFile extends Persistence{
         } catch (IOException e) {
             e.printStackTrace();
         }
+        
         return false;
     }
 
@@ -56,7 +64,14 @@ public class JsonFile extends Persistence{
     @Override
     public void setDefaultLocation() {
         setLocation("./profiles");
-    }   
+    }
+    
+    @Override
+    public boolean delete(String username){
+        File file = new File(getLocation() + "/" + username + ".json");
+
+        return file.delete();
+    }
 
     
 }
