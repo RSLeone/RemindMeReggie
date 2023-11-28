@@ -30,14 +30,8 @@ public class Driver
         // b2.getSteps().add(new Step("HA", 1, false));
         // System.out.println(b2.getSteps().get(0).getStepName());
 
-
-
-        Profile p = new Profile("TestProfile", "myPassword");
-        JsonFile j = new JsonFile();
-        j.setLocation("./profiles");
-        j.save(p);
-
-        Profile u = j.load(p.getUsername());
-        System.out.println(u.getUsername() + " " + u.getHashedPassword());
+        CalanderHandler ch = new CalanderHandler();
+        ch.exportToCalander("",null);
+        ch.importFromCalander("");
     }
 }
