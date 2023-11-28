@@ -44,86 +44,130 @@ public class EventHandlerTest {
 
     @Test
     public void addEventValidTest() {
+        int prevSize = p.getEvents().size();
         int result = EventHandler.addEvent(p, name, startTime, endTime, startDate, endDate, type, severity, frequency);
+        int curSize = p.getEvents().size();
 
         Assert.assertEquals(result, 0);
+        Assert.assertEquals(curSize, prevSize + 1);
     }
     
     @Test
     public void addEventInvalidName() {
+        int prevSize = p.getEvents().size();
         int result = EventHandler.addEvent(p, "", startTime, endTime, startDate, endDate, type, severity, frequency);
+        int curSize = p.getEvents().size();
 
         Assert.assertEquals(result, -1);
+        Assert.assertEquals(prevSize, curSize);
     }
 
     @Test
     public void addEventInvalidType() {
+        int prevSize = p.getEvents().size();
         int result = EventHandler.addEvent(p, name, startTime, endTime, startDate, endDate, "", severity, frequency);
+        int curSize = p.getEvents().size();
 
         Assert.assertEquals(result, -2);
+        Assert.assertEquals(prevSize, curSize);
     }
 
     @Test
     public void addEventInvalidSeverityTest() {
+        int prevSize = p.getEvents().size();
         int result = EventHandler.addEvent(p, name, startTime, endTime, startDate, endDate, type, 10, frequency);
+        int curSize = p.getEvents().size();
 
         Assert.assertEquals(result, -3);
+        Assert.assertEquals(prevSize, curSize);
     }
 
     @Test
     public void editEventNameValidTest() {
+        String prevName = p.getEvents().get(0).getEventName();
         AbstractEvent e = p.getEvents().get(0);
         int result = EventHandler.editEventName(p, e, "TESTEVENT");
+        String curName = p.getEvents().get(0).getEventName();
+
         Assert.assertEquals(result, 0);
+        Assert.assertNotEquals(prevName, curName);
     }
 
     @Test
     public void editEventNameInvalidEventTest() {
+        String prevName = p.getEvents().get(0).getEventName();
         AbstractEvent e = null;
         int result = EventHandler.editEventName(p, e, "TESTEVENT");
+        String curName = p.getEvents().get(0).getEventName();
+
         Assert.assertEquals(result, -4);
+        Assert.assertEquals(prevName, curName);
     }
 
     @Test
     public void editEventNameInvalidNameTest() {
+        String prevName = p.getEvents().get(0).getEventName();
         AbstractEvent e = p.getEvents().get(0);
         int result = EventHandler.editEventName(p, e, "");
+        String curName = p.getEvents().get(0).getEventName();
+
         Assert.assertEquals(result, -1);
+        Assert.assertEquals(prevName, curName);
     }
 
     @Test
     public void editEventStartTimeValidTest() {
+        LocalTime prevStartTime = p.getEvents().get(0).getStartTime();
         AbstractEvent e = p.getEvents().get(0);
-        int result = EventHandler.editEventStartTime(p, e, startTime);
+        int result = EventHandler.editEventStartTime(p, e, LocalTime.now());
+        LocalTime curStartTime = p.getEvents().get(0).getStartTime();
+
         Assert.assertEquals(result, 0);
+        Assert.assertNotEquals(prevStartTime, curStartTime);
     }
 
     @Test
     public void editEventStartTimeInvalidEventTest() {
+        LocalTime prevStartTime = p.getEvents().get(0).getStartTime();
         AbstractEvent e = null;
-        int result = EventHandler.editEventStartTime(p, e, startTime);
+        int result = EventHandler.editEventStartTime(p, e, LocalTime.now());
+        LocalTime curStartTime = p.getEvents().get(0).getStartTime();
+
         Assert.assertEquals(result, -4);
+        Assert.assertEquals(prevStartTime, curStartTime);
     }
 
     @Test
     public void editEventEndTimeValidTest() {
+        LocalTime prevEndTime = p.getEvents().get(0).getEndTime();
         AbstractEvent e = p.getEvents().get(0);
-        int result = EventHandler.editEventEndTime(p, e, endTime);
+        int result = EventHandler.editEventEndTime(p, e, LocalTime.now());
+        LocalTime curEndTime = p.getEvents().get(0).getEndTime();
+
         Assert.assertEquals(result, 0);
+        Assert.assertNotEquals(prevEndTime, curEndTime);
     }
 
     @Test
     public void editEventEndTimeInvalidEventTest() {
+        LocalTime prevEndTime = p.getEvents().get(0).getEndTime();
         AbstractEvent e = null;
-        int result = EventHandler.editEventEndTime(p, e, endTime);
+        int result = EventHandler.editEventEndTime(p, e, LocalTime.now());
+        LocalTime curEndTime = p.getEvents().get(0).getEndTime();
+
         Assert.assertEquals(result, -4);
+        Assert.assertEquals(prevEndTime, curEndTime);
     }
 
     @Test
     public void editEventStartDateValidTest() {
+        Date prevStartDate = p.getEvents().get(0).getStartDate();
         AbstractEvent e = p.getEvents().get(0);
-        int result = EventHandler.editEventStartDate(p, e, startDate);
+        int result = EventHandler.editEventStartDate(p, e, new Date(1000));
+        Date curStartDate = p.getEvents().get(0).getStartDate();
+
         Assert.assertEquals(result, 0);
+        Assert.assertNotEquals(prevStartDate, curStartDate);
     }
 
     @Test
