@@ -1,18 +1,15 @@
 package main;
-import java.time.LocalTime;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public abstract class AbstractEvent 
 {
     
-    public enum Frequencies {NOT_RECURRING, DAILY, MONTHLY, YEARLY}
+    public enum Frequencies {NOT_RECURRING, DAILY, WEEKLY, MONTHLY, YEARLY}
 
     private String eventId;
     private String eventName;
-    private LocalTime startTime;
-    private LocalTime endTime;
-    private Date startDate;
-    private Date endDate;
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
     private String eventType;
     private boolean isComplete;
     private int severityLevel;
@@ -21,10 +18,8 @@ public abstract class AbstractEvent
     public AbstractEvent(AbstractEventBuilder b) {
         this.eventId = b.eventId;
         this.eventName = b.eventName;
-        this.startTime = b.startTime;
-        this.endTime = b.endTime;
-        this.startDate = b.startDate;
-        this.endDate = b.endDate;
+        this.startDateTime = b.startDateTime;
+        this.endDateTime = b.endDateTime;
         this.eventType = b.eventType;
         this.isComplete = b.isComplete;
         this.severityLevel = b.severityLevel;
@@ -35,10 +30,8 @@ public abstract class AbstractEvent
     public static abstract class AbstractEventBuilder{
         private String eventId;
         private String eventName;
-        private LocalTime startTime;
-        private LocalTime endTime;
-        private Date startDate;
-        private Date endDate;
+        private LocalDateTime startDateTime;
+        private LocalDateTime endDateTime;
         private String eventType;
         private boolean isComplete = false;
         private int severityLevel;
@@ -54,23 +47,13 @@ public abstract class AbstractEvent
             return this;
         }
 
-        public AbstractEventBuilder startTime(LocalTime time){
-            this.startTime = time;
+        public AbstractEventBuilder startDateTime(LocalDateTime time){
+            this.startDateTime = time;
             return this;
         }
 
-        public AbstractEventBuilder endTime(LocalTime time){
-            this.endTime = time;
-            return this;
-        }
-
-        public AbstractEventBuilder startDate(Date date){
-            this.startDate = date;
-            return this;
-        }
-
-        public AbstractEventBuilder endDate(Date date){
-            this.endDate = date;
+        public AbstractEventBuilder endDateTime(LocalDateTime time){
+            this.endDateTime = time;
             return this;
         }
 
@@ -104,29 +87,17 @@ public abstract class AbstractEvent
     public void setEventName(String eventName) {
         this.eventName = eventName;
     }
-    public LocalTime getStartTime() {
-        return startTime;
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
     }
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
+    public void setStartTime(LocalDateTime startDateTime) {
+        this.startDateTime = startDateTime;
     }
-    public LocalTime getEndTime() {
-        return endTime;
+    public LocalDateTime getEndDateTime() {
+        return endDateTime;
     }
-    public void setEndTime(LocalTime endTIme) {
-        this.endTime = endTIme;
-    }
-    public Date getStartDate() {
-        return startDate;
-    }
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-    public Date getEndDate() {
-        return endDate;
-    }
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+    public void setEndTime(LocalDateTime endDateTime) {
+        this.endDateTime = endDateTime;
     }
     public String getEventType() {
         return eventType;
