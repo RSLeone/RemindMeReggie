@@ -1,8 +1,27 @@
 package main;
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalTime;
+
+import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
+
+import main.Event.EventBuilder;
+
+import java.time.Duration;
+
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.Recur;
+import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.property.DtEnd;
+import net.fortuna.ical4j.model.property.RRule;
+import net.fortuna.ical4j.transform.recurrence.Frequency;
+import net.fortuna.ical4j.util.RandomUidGenerator;
+
+
+
+
+
+
+
+
 
 public class Driver
 {
@@ -30,8 +49,26 @@ public class Driver
         // b2.getSteps().add(new Step("HA", 1, false));
         // System.out.println(b2.getSteps().get(0).getStepName());
 
+        // CalanderHandler ch = new CalanderHandler();
+        // ch.exportToCalander("",null);
+        // ch.importFromCalander("");
+
+        LocalDateTime startDateTime = LocalDateTime.of(2023, 11, 28, 4, 30, 0);
+
+        LocalDateTime endDateTime = LocalDateTime.of(2023, 12, 28, 8, 15, 0);
+
+        Profile p = new Profile("ANdrew", "123456");
+
+        Event e = (Event)(new EventBuilder()).startDateTime(LocalDateTime.of(2023, 11, 28, 8, 0, 0)).endDateTime(
+            LocalDateTime.of(2023, 12, 28, 12, 0, 0)).frequency(AbstractEvent.Frequencies.NOT_RECURRING).eventName("Gaming").build();
+        
+        p.getEvents().add(e);
+
         CalanderHandler ch = new CalanderHandler();
-        ch.exportToCalander("",null);
-        ch.importFromCalander("");
+
+        ch.exportToCalander("./here.ics", p);
+
+        
+
     }
 }
