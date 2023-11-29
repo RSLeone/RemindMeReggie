@@ -7,13 +7,14 @@ import java.time.Duration;
 
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.ParameterList;
 import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.DtEnd;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.model.property.Version;
-
 import net.fortuna.ical4j.transform.recurrence.Frequency;
 import net.fortuna.ical4j.util.RandomUidGenerator;
 
@@ -22,18 +23,23 @@ public class CalanderHandler {
     
     public boolean exportToCalander(String path, Profile p){
         try{
-            net.fortuna.ical4j.model.Calendar calendar = new Calendar();
+            Calendar calendar = new Calendar();
 
             calendar.add(new ProdId("RemindMeReggie"));
-            calendar.add(Version.VERSION_2_0);
+            calendar.add(new Version(new ParameterList(), Version.VALUE_2_0));
 
             for(AbstractEvent e: p.getEvents()){
                 
                 LocalDateTime startDateTime = e.getStartDateTime();
                 LocalDateTime endDateTime = e.getEndDateTime();
 
+                // Create a unique identifier generator (UID)
+                RandomUidGenerator ug = new RandomUidGenerator();
+
                 if(e.getFrequency() == AbstractEvent.Frequencies.NOT_RECURRING){
                     VEvent event = new VEvent(startDateTime, endDateTime, e.getEventName());
+                    
+                    event.add(ug.generateUid());
                     calendar.add(event);
                 }
 
@@ -45,9 +51,6 @@ public class CalanderHandler {
                     Recur<Temporal> recur = new Recur.Builder<>().frequency(Frequency.DAILY).build();
 
                     VEvent recurringEvent = new VEvent(startDateTime, duration, e.getEventName());
-
-                    // Create a unique identifier generator (UID)
-                    RandomUidGenerator ug = new RandomUidGenerator();
 
                     recurringEvent.add(ug.generateUid());
                     recurringEvent.add(new RRule<>(recur));
@@ -64,9 +67,6 @@ public class CalanderHandler {
 
                     VEvent recurringEvent = new VEvent(startDateTime, duration, e.getEventName());
 
-                    // Create a unique identifier generator (UID)
-                    RandomUidGenerator ug = new RandomUidGenerator();
-
                     recurringEvent.add(ug.generateUid());
                     recurringEvent.add(new RRule<>(recur));
                     recurringEvent.add(new DtEnd<>(endTime));
@@ -81,9 +81,6 @@ public class CalanderHandler {
                     Recur<Temporal> recur = new Recur.Builder<>().frequency(Frequency.MONTHLY).build();
 
                     VEvent recurringEvent = new VEvent(startDateTime, duration, e.getEventName());
-
-                    // Create a unique identifier generator (UID)
-                    RandomUidGenerator ug = new RandomUidGenerator();
 
                     recurringEvent.add(ug.generateUid());
                     recurringEvent.add(new RRule<>(recur));
