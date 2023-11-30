@@ -1,10 +1,19 @@
+package main;
 import java.util.Scanner;
+
+//import all other classes
+import main.Persistence;
+import main.PersistenceFactory;
+import main.Profile;
+import main.PersistenceFactory.persistenceType;
+import main.ProfileBackupHandler;
+import main.ProfileHandler;
+import main.EventHandler;
 
 public class UserInterfaceController {
     Profile currentProfile;
-    EventController ec = new EventController();
-    ProfileBackupController pbc = new ProfileBackupController();
-    //ProfileHanlder ph = new ProfileHandler();
+    EventHandler eh = new EventHandler();
+    ProfileBackupHandler pbh = new ProfileBackupHandler();
     
 
     public Profile getCurrentProfile() {
@@ -58,8 +67,10 @@ public class UserInterfaceController {
 
             //if user logs in
             if(userChoice ==1){
+                
 
                 //upon successful login, breaks loop, closes scanner, and returns to userInteraction
+                //loginAttemptCode = loginToProfile(); //calls helper method
                 break;
             }
 
@@ -129,7 +140,32 @@ public class UserInterfaceController {
     }
 
     //helper method to login to profile
-    private void loginToProfile(){
-        
+    private boolean loginToProfile(){
+        Scanner loginScanner = new Scanner(System.in);
+        int loginAttemptCode = 0;
+
+        //Prompt for user input for username and password
+        System.out.print("Please enter your username: ");
+        String usernameInput = loginScanner.next();
+        System.out.print("Please enter your password: ");
+        String passwordInput = loginScanner.next();
+
+        loginAttemptCode =  ProfileHandler.login(usernameInput, passwordInput);
+        if(loginAttemptCode == 0) //successful login
+            return true;
+        if(loginAttemptCode == -101){
+            //invalid username
+            System.out.println("Please ensure the username is at least 1 character.");
+            return false;
+         }
+         if(loginAttemptCode == -102){
+            //invalid password
+            System.out.println("Please ensure the password is at least 1 character.");
+            return false;
+         }
+         if(loginAttemptCode == -103){
+            
+         }
     }
+
 }
