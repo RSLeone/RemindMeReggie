@@ -4,9 +4,8 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import javafx.util.Pair;
 import main.*;
 
@@ -14,10 +13,8 @@ public class EventHandlerTest {
 
     private Profile p;
     private String name;
-    private LocalTime startTime;
-    private LocalTime endTime;
-    private Date startDate;
-    private Date endDate;
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
     private String type;
     private int severity;
     private AbstractEvent.Frequencies frequency;
@@ -26,15 +23,13 @@ public class EventHandlerTest {
     public void createProfile(){
         p = new Profile("test", "test");
         name = "testEvent";
-        startTime = LocalTime.now();
-        endTime = LocalTime.now().plusMinutes(10);
-        startDate = new Date();
-        endDate = new Date();
+        startDateTime = LocalDateTime.now();
+        endDateTime = LocalDateTime.now().plusMinutes(10);
         type = "test";
         severity = 0;
         frequency = AbstractEvent.Frequencies.DAILY;
 
-        EventHandler.addEvent(p, name, startTime, endTime, startDate, endDate, type, severity, frequency);
+        EventHandler.addEvent(p, name, startDateTime, endDateTime, type, severity, frequency);
     }
 
     @After
@@ -45,7 +40,7 @@ public class EventHandlerTest {
     @Test
     public void addEventValidTest() {
         int prevSize = p.getEvents().size();
-        Returns result = EventHandler.addEvent(p, name, startTime, endTime, startDate, endDate, type, severity, frequency);
+        Returns result = EventHandler.addEvent(p, name, startDateTime, endDateTime, type, severity, frequency);
         int curSize = p.getEvents().size();
 
         Assert.assertEquals(result.getReturnCode(), 0);
@@ -55,7 +50,7 @@ public class EventHandlerTest {
     @Test
     public void addEventInvalidName() {
         int prevSize = p.getEvents().size();
-        Returns result = EventHandler.addEvent(p, "", startTime, endTime, startDate, endDate, type, severity, frequency);
+        Returns result = EventHandler.addEvent(p, "", startDateTime, endDateTime, type, severity, frequency);
         int curSize = p.getEvents().size();
 
         Assert.assertEquals(result.getReturnCode(), -1);
@@ -65,7 +60,7 @@ public class EventHandlerTest {
     @Test
     public void addEventInvalidType() {
         int prevSize = p.getEvents().size();
-        Returns result = EventHandler.addEvent(p, name, startTime, endTime, startDate, endDate, "", severity, frequency);
+        Returns result = EventHandler.addEvent(p, name, startDateTime, endDateTime, "", severity, frequency);
         int curSize = p.getEvents().size();
 
         Assert.assertEquals(result.getReturnCode(), -2);
@@ -75,7 +70,7 @@ public class EventHandlerTest {
     @Test
     public void addEventInvalidSeverityTest() {
         int prevSize = p.getEvents().size();
-        Returns result = EventHandler.addEvent(p, name, startTime, endTime, startDate, endDate, type, 10, frequency);
+        Returns result = EventHandler.addEvent(p, name, startDateTime, endDateTime, type, 10, frequency);
         int curSize = p.getEvents().size();
 
         Assert.assertEquals(result.getReturnCode(), -3);
@@ -116,81 +111,50 @@ public class EventHandlerTest {
     }
 
     @Test
-    public void editEventStartTimeValidTest() {
-        LocalTime prevStartTime = p.getEvents().get(0).getStartTime();
+    public void editEventStartDateTimeValidTest() {
+        LocalDateTime prevStartDateTime = p.getEvents().get(0).getStartDateTime();
         AbstractEvent e = p.getEvents().get(0);
-        Returns result = EventHandler.editEventStartTime(p, e, LocalTime.now().plusMinutes(5));
-        LocalTime curStartTime = p.getEvents().get(0).getStartTime();
+        Returns result = EventHandler.editEventStartDateTime(p, e, LocalDateTime.now().plusMinutes(5));
+        LocalDateTime curStartDateTime = p.getEvents().get(0).getStartDateTime();
 
         Assert.assertEquals(result.getReturnCode(), 0);
-        Assert.assertNotEquals(prevStartTime, curStartTime);
+        Assert.assertNotEquals(prevStartDateTime, curStartDateTime);
     }
 
     @Test
-    public void editEventStartTimeInvalidEventTest() {
-        LocalTime prevStartTime = p.getEvents().get(0).getStartTime();
+    public void editEventStartDateTimeInvalidEventTest() {
+        LocalDateTime prevStartDateTime = p.getEvents().get(0).getStartDateTime();
         AbstractEvent e = null;
-        Returns result = EventHandler.editEventStartTime(p, e, LocalTime.now());
-        LocalTime curStartTime = p.getEvents().get(0).getStartTime();
+        Returns result = EventHandler.editEventStartDateTime(p, e, LocalDateTime.now());
+        LocalDateTime curStartDateTime = p.getEvents().get(0).getStartDateTime();
 
         Assert.assertEquals(result.getReturnCode(), -4);
-        Assert.assertEquals(prevStartTime, curStartTime);
+        Assert.assertEquals(prevStartDateTime, curStartDateTime);
     }
 
     @Test
-    public void editEventEndTimeValidTest() {
-        LocalTime prevEndTime = p.getEvents().get(0).getEndTime();
+    public void editEventEndDateTimeValidTest() {
+        LocalDateTime prevEndDateTime = p.getEvents().get(0).getEndDateTime();
         AbstractEvent e = p.getEvents().get(0);
-        Returns result = EventHandler.editEventEndTime(p, e, LocalTime.now());
-        LocalTime curEndTime = p.getEvents().get(0).getEndTime();
+        Returns result = EventHandler.editEventEndDateTime(p, e, LocalDateTime.now());
+        LocalDateTime curEndDateTime = p.getEvents().get(0).getEndDateTime();
 
         Assert.assertEquals(result.getReturnCode(), 0);
-        Assert.assertNotEquals(prevEndTime, curEndTime);
+        Assert.assertNotEquals(prevEndDateTime, curEndDateTime);
     }
 
     @Test
-    public void editEventEndTimeInvalidEventTest() {
-        LocalTime prevEndTime = p.getEvents().get(0).getEndTime();
+    public void editEventEndDateTimeInvalidEventTest() {
+        LocalDateTime prevEndDateTime = p.getEvents().get(0).getEndDateTime();
         AbstractEvent e = null;
-        Returns result = EventHandler.editEventEndTime(p, e, LocalTime.now());
-        LocalTime curEndTime = p.getEvents().get(0).getEndTime();
+        Returns result = EventHandler.editEventEndDateTime(p, e, LocalDateTime.now());
+        LocalDateTime curEndDateTime = p.getEvents().get(0).getEndDateTime();
 
         Assert.assertEquals(result.getReturnCode(), -4);
-        Assert.assertEquals(prevEndTime, curEndTime);
+        Assert.assertEquals(prevEndDateTime, curEndDateTime);
     }
 
-    @Test
-    public void editEventStartDateValidTest() {
-        Date prevStartDate = p.getEvents().get(0).getStartDate();
-        AbstractEvent e = p.getEvents().get(0);
-        Returns result = EventHandler.editEventStartDate(p, e, new Date(1000));
-        Date curStartDate = p.getEvents().get(0).getStartDate();
-
-        Assert.assertEquals(result.getReturnCode(), 0);
-        Assert.assertNotEquals(prevStartDate, curStartDate);
-    }
-
-    @Test
-    public void editEventStartDateInvalidEventTest() {
-        AbstractEvent e = null;
-        Returns result = EventHandler.editEventStartDate(p, e, startDate);
-        Assert.assertEquals(result.getReturnCode(), -4);
-    }
-
-    @Test
-    public void editEventEndDateValidTest() {
-        AbstractEvent e = p.getEvents().get(0);
-        Returns result = EventHandler.editEventEndDate(p, e, endDate);
-        Assert.assertEquals(result.getReturnCode(), 0);
-    }
-
-    @Test
-    public void editEventEndDateInvalidEventTest() {
-        AbstractEvent e = null;
-        Returns result = EventHandler.editEventEndDate(p, e, endDate);
-        Assert.assertEquals(result.getReturnCode(), -4);
-    }    
-
+    
     @Test
     public void editEventTypeValidTest() {
         AbstractEvent e = p.getEvents().get(0);
@@ -263,35 +227,35 @@ public class EventHandlerTest {
 
     @Test
     public void addMonitoredEventValidTest() {
-        Returns result = EventHandler.addMonitoredEvent(p, name, startTime, endTime, startDate, endDate, type, false, severity, frequency);
+        Returns result = EventHandler.addMonitoredEvent(p, name, startDateTime, endDateTime, type, false, severity, frequency);
 
         Assert.assertEquals(result.getReturnCode(), 0);
     }
 
     @Test
     public void addMonitoredEventInvalidNameTest() {
-        Returns result = EventHandler.addMonitoredEvent(p, "", startTime, endTime, startDate, endDate, type, false, severity, frequency);
+        Returns result = EventHandler.addMonitoredEvent(p, "", startDateTime, endDateTime, type, false, severity, frequency);
 
         Assert.assertEquals(result.getReturnCode(), -1);
     }
 
     @Test
     public void addMonitoredEventInvalidTypeTest() {
-        Returns result = EventHandler.addMonitoredEvent(p, name, startTime, endTime, startDate, endDate, "", false, severity, frequency);
+        Returns result = EventHandler.addMonitoredEvent(p, name, startDateTime, endDateTime, "", false, severity, frequency);
 
         Assert.assertEquals(result.getReturnCode(), -2);
     }
 
     @Test
     public void addMonitoredEventInvalidSeverityTest() {
-        Returns result = EventHandler.addMonitoredEvent(p, name, startTime, endTime, startDate, endDate, type, false, 10, frequency);
+        Returns result = EventHandler.addMonitoredEvent(p, name, startDateTime, endDateTime, type, false, 10, frequency);
 
         Assert.assertEquals(result.getReturnCode(), -3);
     }
 
     @Test
     public void addStepValidTest() {
-        EventHandler.addMonitoredEvent(p, name, startTime, endTime, startDate, endDate, type, false, severity, frequency);
+        EventHandler.addMonitoredEvent(p, name, startDateTime, endDateTime, type, false, severity, frequency);
         MonitoredEvent m = (MonitoredEvent) p.getEvents().get(1);
         Step s = new Step("test", 0, false);
         Returns result = EventHandler.addStep(m, s);
@@ -312,14 +276,14 @@ public class EventHandlerTest {
     }
     
     @Test
-    public void searchForEventDateEventFoundTest() {
-        AbstractEvent result = EventHandler.searchForEventDate(p, startDate);
+    public void searchForEventDateTimeEventFoundTest() {
+        AbstractEvent result = EventHandler.searchForEventDateTime(p, startDateTime);
         Assert.assertEquals(result, p.getEvents().get(0));
     }
 
     @Test
-    public void searchForEventDateEventNotFoundTest() {
-        AbstractEvent result = EventHandler.searchForEventDate(p, new Date(100));
+    public void searchForEventDateTimeEventNotFoundTest() {
+        AbstractEvent result = EventHandler.searchForEventDateTime(p, LocalDateTime.now().plusMinutes(100));
         Assert.assertEquals(result, null);
     }
 
@@ -367,13 +331,13 @@ public class EventHandlerTest {
 
     @Test
     public void viewPastEventsValidTest() {
-        Pair<ArrayList<AbstractEvent>, Returns> result = EventHandler.viewPastEvents(p, startDate, endDate);
+        Pair<ArrayList<AbstractEvent>, Returns> result = EventHandler.viewPastEvents(p, startDateTime, endDateTime);
         Assert.assertEquals((long) result.getValue().getReturnCode(), 0);
     }
 
     @Test
     public void viewPastEventsNoEventsFoundTest() {
-        Date testDate = new Date(1000);
+        LocalDateTime testDate = LocalDateTime.now().plusMinutes(100);
         Pair<ArrayList<AbstractEvent>, Returns> result = EventHandler.viewPastEvents(p, testDate, testDate);
         Assert.assertEquals((long) result.getValue().getReturnCode(), -5);
     }

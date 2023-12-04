@@ -1,13 +1,12 @@
 package main;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.time.LocalTime;
-import java.util.Date;
+import java.time.LocalDateTime;
 import javafx.util.Pair;
 
 public class EventHandler {
 
-    public static Returns addEvent(Profile p, String eventName, LocalTime startTime, LocalTime endTime, Date startDate, Date endDate, 
+    public static Returns addEvent(Profile p, String eventName, LocalDateTime startDateTime, LocalDateTime endDateTime, 
                     String eventType, int severityLevel, AbstractEvent.Frequencies frequency) {
 
         if (eventName.length() <= 0 || eventName.length() > 50) {
@@ -23,8 +22,8 @@ public class EventHandler {
         ArrayList<AbstractEvent> events = p.getEvents();
         int newID = p.getNextEventId();
         p.setNextEventId(newID + 1);
-        AbstractEvent newEvent = new Event.EventBuilder().eventId(Integer.toString(newID)).eventName(eventName).startTime(startTime)
-                        .endTime(endTime).startDate(startDate).endDate(endDate).eventType(eventType).severityLevel(severityLevel)
+        AbstractEvent newEvent = new Event.EventBuilder().eventId(Integer.toString(newID)).eventName(eventName).startDateTime(startDateTime)
+                        .endDateTime(endDateTime).eventType(eventType).severityLevel(severityLevel)
                         .frequency(frequency).build();
 
         events.add(newEvent);
@@ -46,47 +45,25 @@ public class EventHandler {
         return Returns.SUCCESS;
     }
 
-    public static Returns editEventStartTime(Profile p, AbstractEvent e, LocalTime startTime) {
+    public static Returns editEventStartDateTime(Profile p, AbstractEvent e, LocalDateTime startDateTime) {
         ArrayList<AbstractEvent> events = p.getEvents();
 
         if (! events.contains(e)) {
             return Returns.EVENT_DOES_NOT_EXIST;
         }
 
-        e.setStartTime(startTime);
+        e.setStartTime(startDateTime);
         return Returns.SUCCESS;
     }
 
-    public static Returns editEventEndTime(Profile p, AbstractEvent e, LocalTime endTime) {
+    public static Returns editEventEndDateTime(Profile p, AbstractEvent e, LocalDateTime endDateTime) {
         ArrayList<AbstractEvent> events = p.getEvents();
 
         if (! events.contains(e)) {
             return Returns.EVENT_DOES_NOT_EXIST;
         }
 
-        e.setEndTime(endTime);
-        return Returns.SUCCESS;
-    }
-
-    public static Returns editEventStartDate(Profile p, AbstractEvent e, Date startDate) {
-        ArrayList<AbstractEvent> events = p.getEvents();
-
-        if (! events.contains(e)) {
-            return Returns.EVENT_DOES_NOT_EXIST;
-        }
-
-        e.setStartDate(startDate);
-        return Returns.SUCCESS;
-    }
-
-    public static Returns editEventEndDate(Profile p, AbstractEvent e, Date endDate) {
-        ArrayList<AbstractEvent> events = p.getEvents();
-
-        if (! events.contains(e)) {
-            return Returns.EVENT_DOES_NOT_EXIST;
-        }
-
-        e.setEndDate(endDate);
+        e.setEndTime(endDateTime);
         return Returns.SUCCESS;
     }
 
@@ -140,8 +117,8 @@ public class EventHandler {
         return Returns.SUCCESS;
     }
 
-    public static Returns addMonitoredEvent(Profile p, String eventName, LocalTime startTime, LocalTime endTime, Date startDate,
-                     Date endDate, String eventType, Boolean isComplete, int severityLevel, AbstractEvent.Frequencies frequency) {
+    public static Returns addMonitoredEvent(Profile p, String eventName, LocalDateTime startDateTime, LocalDateTime endDateTime,
+                    String eventType, Boolean isComplete, int severityLevel, AbstractEvent.Frequencies frequency) {
         
         if (eventName.length() <= 0 || eventName.length() > 50) {
             return Returns.INVALID_EVENT_NAME;
@@ -157,7 +134,7 @@ public class EventHandler {
         int newID = p.getNextEventId();
         p.setNextEventId(newID + 1);
         AbstractEvent newEvent = new MonitoredEvent.MonitoredEventBuilder().eventId(Integer.toString(newID)).eventName(eventName)
-                        .startTime(startTime).endTime(endTime).startDate(startDate).endDate(endDate).eventType(eventType)
+                        .startDateTime(startDateTime).endDateTime(endDateTime).eventType(eventType)
                         .severityLevel(severityLevel).frequency(frequency).build();
 
         events.add(newEvent);
@@ -187,10 +164,10 @@ public class EventHandler {
         return new Pair<AbstractEvent, Returns> (null, Returns.SUCCESS);
     }
 
-    public static AbstractEvent searchForEventDate(Profile p, Date date) {
+    public static AbstractEvent searchForEventDateTime(Profile p, LocalDateTime dateTime) {
         ArrayList<AbstractEvent> events = p.getEvents();
         for(int i = 0; i < events.size(); i++){
-            if (events.get(i).getStartDate() == date){
+            if (events.get(i).getStartDateTime() == dateTime){
                 return events.get(i);
             }
         }
@@ -233,7 +210,7 @@ public class EventHandler {
         for(int i = 0; i < events.size(); i++){
             curEvent = events.get(i);
             if (curEvent instanceof MonitoredEvent){
-                if (curEvent.getEndDate().compareTo(curNextEvent.getEndDate()) < 0){ //curEvent's end date is before curNextEvent's end date
+                if (curEvent.getEndDateTime().compareTo(curNextEvent.getEndDateTime()) < 0){ //curEvent's end date is before curNextEvent's end date
                     curNextEvent = curEvent;
                 }
             }
@@ -255,8 +232,7 @@ public class EventHandler {
             for (int i = 0; i < eventsList.size(); i++) {
                 AbstractEvent event = eventsList.get(i);
                 System.out.println("Name: " + event.getEventName());
-                System.out.println("Duration: " + event.getStartTime() + " - " + event.getEndTime());
-                System.out.println("Dates: " + event.getStartDate() + " - " + event.getEndDate());
+                System.out.println("Date & Time: " + event.getStartDateTime() + " - " + event.getEndDateTime());
                 System.out.println("Type: " + event.getEventType());
                 System.out.println("Severity: " + event.getSeverityLevel());
                 System.out.println("Frequency: " + event.getFrequency());
@@ -266,15 +242,15 @@ public class EventHandler {
         return Returns.SUCCESS;
     }
 
-    public static Pair<ArrayList<AbstractEvent>, Returns> viewPastEvents(Profile p, Date startRange, Date endRange) {
+    public static Pair<ArrayList<AbstractEvent>, Returns> viewPastEvents(Profile p, LocalDateTime startRange, LocalDateTime endRange) {
         ArrayList<AbstractEvent> events = p.getEvents();
-        Date start;
-        Date end;
+        LocalDateTime start;
+        LocalDateTime end;
         ArrayList<AbstractEvent> pastEvents = new ArrayList<AbstractEvent>();
 
         for(int i = 0; i < events.size(); i++){
-            start = events.get(i).getStartDate();
-            end = events.get(i).getEndDate();
+            start = events.get(i).getStartDateTime();
+            end = events.get(i).getEndDateTime();
             if ((start.compareTo(startRange) >= 0) && end.compareTo(endRange) <= 0){
                 pastEvents.add(events.get(i));
             }
