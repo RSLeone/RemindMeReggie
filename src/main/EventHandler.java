@@ -7,17 +7,17 @@ import javafx.util.Pair;
 
 public class EventHandler {
 
-    public static int addEvent(Profile p, String eventName, LocalTime startTime, LocalTime endTime, Date startDate, Date endDate, 
+    public static Returns addEvent(Profile p, String eventName, LocalTime startTime, LocalTime endTime, Date startDate, Date endDate, 
                     String eventType, int severityLevel, AbstractEvent.Frequencies frequency) {
 
         if (eventName.length() <= 0 || eventName.length() > 50) {
-            return -1;
+            return Returns.INVALID_EVENT_NAME;
         }
         if (eventType.length() <= 0 | eventType.length() > 50){
-            return -2;
+            return Returns.INVALID_EVENT_TYPE;
         }
         if (severityLevel < 0 || severityLevel > 5) {
-            return -3;
+            return Returns.INVALID_SEVERITY_LEVEL;
         }
         
         ArrayList<AbstractEvent> events = p.getEvents();
@@ -28,129 +28,129 @@ public class EventHandler {
                         .frequency(frequency).build();
 
         events.add(newEvent);
-        return 0;
+        return Returns.SUCCESS;
     }
 
-    public static int editEventName(Profile p, AbstractEvent e, String name) {
+    public static Returns editEventName(Profile p, AbstractEvent e, String name) {
         ArrayList<AbstractEvent> events = p.getEvents();
 
         if (! events.contains(e)) {
-            return -4;
+            return Returns.EVENT_DOES_NOT_EXIST;
         }
         if (name.length() <= 0 || name.length() > 50) {
-            return -1;
+            return Returns.INVALID_EVENT_NAME;
         }
 
 
         e.setEventName(name);
-        return 0;
+        return Returns.SUCCESS;
     }
 
-    public static int editEventStartTime(Profile p, AbstractEvent e, LocalTime startTime) {
+    public static Returns editEventStartTime(Profile p, AbstractEvent e, LocalTime startTime) {
         ArrayList<AbstractEvent> events = p.getEvents();
 
         if (! events.contains(e)) {
-            return -4;
+            return Returns.EVENT_DOES_NOT_EXIST;
         }
 
         e.setStartTime(startTime);
-        return 0;
+        return Returns.SUCCESS;
     }
 
-    public static int editEventEndTime(Profile p, AbstractEvent e, LocalTime endTime) {
+    public static Returns editEventEndTime(Profile p, AbstractEvent e, LocalTime endTime) {
         ArrayList<AbstractEvent> events = p.getEvents();
 
         if (! events.contains(e)) {
-            return -4;
+            return Returns.EVENT_DOES_NOT_EXIST;
         }
 
         e.setEndTime(endTime);
-        return 0;
+        return Returns.SUCCESS;
     }
 
-    public static int editEventStartDate(Profile p, AbstractEvent e, Date startDate) {
+    public static Returns editEventStartDate(Profile p, AbstractEvent e, Date startDate) {
         ArrayList<AbstractEvent> events = p.getEvents();
 
         if (! events.contains(e)) {
-            return -4;
+            return Returns.EVENT_DOES_NOT_EXIST;
         }
 
         e.setStartDate(startDate);
-        return 0;
+        return Returns.SUCCESS;
     }
 
-    public static int editEventEndDate(Profile p, AbstractEvent e, Date endDate) {
+    public static Returns editEventEndDate(Profile p, AbstractEvent e, Date endDate) {
         ArrayList<AbstractEvent> events = p.getEvents();
 
         if (! events.contains(e)) {
-            return -4;
+            return Returns.EVENT_DOES_NOT_EXIST;
         }
 
         e.setEndDate(endDate);
-        return 0;
+        return Returns.SUCCESS;
     }
 
-    public static int editEventType(Profile p, AbstractEvent e, String type) {
+    public static Returns editEventType(Profile p, AbstractEvent e, String type) {
         ArrayList<AbstractEvent> events = p.getEvents();
 
         if (! events.contains(e)) {
-            return -4;
+            return Returns.EVENT_DOES_NOT_EXIST;
         }
         if (type.length() <= 0 | type.length() > 50){
-            return -2;
+            return Returns.INVALID_EVENT_TYPE;
         }
 
         e.setEventType(type);
-        return 0;
+        return Returns.SUCCESS;
     }
 
-    public static int editEventSeverity(Profile p, AbstractEvent e, int severity) {
+    public static Returns editEventSeverity(Profile p, AbstractEvent e, int severity) {
         ArrayList<AbstractEvent> events = p.getEvents();
 
         if (! events.contains(e)) {
-            return -4;
+            return Returns.EVENT_DOES_NOT_EXIST;
         }
         if (severity < 0 || severity > 5) {
-            return -3;
+            return Returns.INVALID_SEVERITY_LEVEL;
         }
 
         e.setSeverityLevel(severity);
-        return 0;
+        return Returns.SUCCESS;
     }
 
-    public static int editEventFrequency(Profile p, AbstractEvent e, AbstractEvent.Frequencies frequency) {
+    public static Returns editEventFrequency(Profile p, AbstractEvent e, AbstractEvent.Frequencies frequency) {
         ArrayList<AbstractEvent> events = p.getEvents();
 
         if (! events.contains(e)) {
-            return -4;
+            return Returns.EVENT_DOES_NOT_EXIST;
         }
 
         e.setFrequency(frequency);
-        return 0;
+        return Returns.SUCCESS;
     }
 
-    public static int removeEvent(Profile p, AbstractEvent e) {
+    public static Returns removeEvent(Profile p, AbstractEvent e) {
         ArrayList<AbstractEvent> events = p.getEvents();
 
         if (! events.contains(e)) {
-            return -4;
+            return Returns.EVENT_DOES_NOT_EXIST;
         }
 
         events.remove(e);
-        return 0;
+        return Returns.SUCCESS;
     }
 
-    public static int addMonitoredEvent(Profile p, String eventName, LocalTime startTime, LocalTime endTime, Date startDate,
+    public static Returns addMonitoredEvent(Profile p, String eventName, LocalTime startTime, LocalTime endTime, Date startDate,
                      Date endDate, String eventType, Boolean isComplete, int severityLevel, AbstractEvent.Frequencies frequency) {
         
         if (eventName.length() <= 0 || eventName.length() > 50) {
-            return -1;
+            return Returns.INVALID_EVENT_NAME;
         }
         if (eventType.length() <= 0 | eventType.length() > 50){
-            return -2;
+            return Returns.INVALID_EVENT_TYPE;
         }
         if (severityLevel < 0 || severityLevel > 5) {
-            return -3;
+            return Returns.INVALID_SEVERITY_LEVEL;
         }
         
         ArrayList<AbstractEvent> events = p.getEvents();
@@ -161,30 +161,30 @@ public class EventHandler {
                         .severityLevel(severityLevel).frequency(frequency).build();
 
         events.add(newEvent);
-        return 0;
+        return Returns.SUCCESS;
     }
 
-    public static int addStep(MonitoredEvent m, Step s) {
+    public static Returns addStep(MonitoredEvent m, Step s) {
         ArrayList<Step> steps = m.getSteps();
         int newStepNum = m.getNextStepNumber();
         m.setNextStepNumber(newStepNum + 1);
         steps.add(s);
-        return 0;
+        return Returns.SUCCESS;
     }
 
-    public static Pair<AbstractEvent, Integer> searchForEventSeverity(Profile p, int level) {
+    public static Pair<AbstractEvent, Returns> searchForEventSeverity(Profile p, int level) {
 
         if (level < 0 || level > 5) {
-            return new Pair<AbstractEvent,Integer>(null, -3);
+            return new Pair<AbstractEvent,Returns>(null, Returns.INVALID_SEVERITY_LEVEL);
         }
         
         ArrayList<AbstractEvent> events = p.getEvents();
         for(int i = 0; i < events.size(); i++){
             if (events.get(i).getSeverityLevel() == level){
-                return new Pair<AbstractEvent, Integer> (events.get(i), 0);
+                return new Pair<AbstractEvent, Returns> (events.get(i),Returns.SUCCESS);
             }
         }
-        return new Pair<AbstractEvent, Integer> (null, 0);
+        return new Pair<AbstractEvent, Returns> (null, Returns.SUCCESS);
     }
 
     public static AbstractEvent searchForEventDate(Profile p, Date date) {
@@ -197,19 +197,19 @@ public class EventHandler {
         return null;
     }
     
-    public static Pair<AbstractEvent, Integer> searchForEventType(Profile p, String type) {
+    public static Pair<AbstractEvent, Returns> searchForEventType(Profile p, String type) {
 
         if (type.length() <= 0 | type.length() > 50){
-            return new Pair<AbstractEvent,Integer>(null, -2);
+            return new Pair<AbstractEvent,Returns>(null, Returns.INVALID_EVENT_TYPE);
         }
 
         ArrayList<AbstractEvent> events = p.getEvents();
         for(int i = 0; i < events.size(); i++){
             if (events.get(i).getEventType() == type){
-                return new Pair<AbstractEvent, Integer> (events.get(i), 0);
+                return new Pair<AbstractEvent, Returns> (events.get(i), Returns.SUCCESS);
             }
         }
-        return new Pair<AbstractEvent, Integer> (null, 0);
+        return new Pair<AbstractEvent, Returns> (null, Returns.SUCCESS);
     }
 
     public static ArrayList<AbstractEvent> sortBySeverity(Profile p, AbstractEvent.Frequencies frequency) {
@@ -245,10 +245,10 @@ public class EventHandler {
         return null;
     }
     
-    public static int displayEventSummary(ArrayList<AbstractEvent> eventsList) { //Display every event's attributes in eventsList
+    public static Returns displayEventSummary(ArrayList<AbstractEvent> eventsList) { //Display every event's attributes in eventsList
         if (eventsList.size() == 0) {
             System.out.println("There are no events to display.");
-            return -5;
+            return Returns.NO_EVENTS_TO_DISPLAY;
         }
         else {
             System.out.println("Displaying Event Summary:");
@@ -263,10 +263,10 @@ public class EventHandler {
                 System.out.println();
             }
         }
-        return 0;
+        return Returns.SUCCESS;
     }
 
-    public static Pair<ArrayList<AbstractEvent>, Integer> viewPastEvents(Profile p, Date startRange, Date endRange) {
+    public static Pair<ArrayList<AbstractEvent>, Returns> viewPastEvents(Profile p, Date startRange, Date endRange) {
         ArrayList<AbstractEvent> events = p.getEvents();
         Date start;
         Date end;
@@ -281,8 +281,8 @@ public class EventHandler {
         }
         
         if (pastEvents.size() == 0) {
-            return new Pair<ArrayList<AbstractEvent>,Integer>(null, -5);
+            return new Pair<ArrayList<AbstractEvent>,Returns>(null, Returns.NO_EVENTS_TO_DISPLAY);
         }
-        return new Pair<ArrayList<AbstractEvent>,Integer>(pastEvents, 0);
+        return new Pair<ArrayList<AbstractEvent>,Returns>(pastEvents, Returns.SUCCESS);
     }
 }
