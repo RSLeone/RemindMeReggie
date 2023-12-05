@@ -66,9 +66,10 @@ public class Driver
 
         CalanderHandler ch = new CalanderHandler();
 
-        ch.exportToCalander("./here.ics", p);
+        ch.exportToCalander("./calanderTestFiles/here.ics", p);
 
-        
+
+        ch.importFromCalander("./calanderTestFiles/here.ics");
 
     }
 }
