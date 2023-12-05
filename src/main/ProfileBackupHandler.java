@@ -2,6 +2,8 @@ package main;
 
 public class ProfileBackupHandler {
 
+    PersistenceFactory factory = new PersistenceFactory();
+
     public static boolean generateBackup(String fileLocation, Profile p, PersistenceFactory.persistenceType t){
         if(p == null){
             return false;
