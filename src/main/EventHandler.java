@@ -18,6 +18,9 @@ public class EventHandler {
         if (severityLevel < 0 || severityLevel > 5) {
             return Returns.INVALID_SEVERITY_LEVEL;
         }
+        if (endDateTime.compareTo(startDateTime) < 0) {
+            return Returns.INVALID_END_DATE_TIME;
+        }
         
         ArrayList<AbstractEvent> events = p.getEvents();
         int newID = p.getNextEventId();
@@ -128,6 +131,9 @@ public class EventHandler {
         }
         if (severityLevel < 0 || severityLevel > 5) {
             return Returns.INVALID_SEVERITY_LEVEL;
+        }
+        if (endDateTime.compareTo(startDateTime) < 0) {
+            return Returns.INVALID_END_DATE_TIME;
         }
         
         ArrayList<AbstractEvent> events = p.getEvents();
