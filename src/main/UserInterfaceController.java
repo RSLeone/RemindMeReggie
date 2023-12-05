@@ -30,7 +30,7 @@ public class UserInterfaceController {
         
     }
 
-    public void displayLoginOptions(){
+    private void displayLoginOptions(){
         //login, create profile, close program (end loop)
         //first thing user sees
         //array of possible options for user
@@ -64,12 +64,10 @@ public class UserInterfaceController {
             //if user logs in
             if(userChoice ==1){
                 
-                boolean successfulLogin = false;
                 //will continously ask for credentials until successful login
                 //upon successful login, breaks loop, closes scanner, and returns to userInteraction
-                while(!successfulLogin){
-                    successfulLogin = loginToProfile();
-                }
+                loginToProfile();
+
                 
                 break;
             }
@@ -84,11 +82,11 @@ public class UserInterfaceController {
                     successfulCreation = createProfile();
                 }
                 
-                break;
             }
 
             //if user closes program
             if(userChoice == 3){
+                inputReader.close();
                 closeProgram();
             }
 
@@ -96,15 +94,15 @@ public class UserInterfaceController {
             if (userChoice == 4){
 
             }
-
-            break;
+            
+            //inputReader.close();
         }
 
-        //close scanner at conclusion of loop/method
     }
 
     private void displayUserOptions(){
         //create scanner for user input
+        //inputReader
         int userChoice = 0;        
 
         //array of possible options for user
@@ -115,6 +113,7 @@ public class UserInterfaceController {
 
         //display possible options indefinitely until user quits
         while(true){
+            System.out.println();
             System.out.println("Please enter the number corresponding to the action you wish to do.");
             for(String choice: userOptions ){
                 System.out.println(choice);
@@ -266,7 +265,7 @@ public class UserInterfaceController {
         } 
         else if(loginAttemptReturn.getReturnCode() == -101 || loginAttemptReturn.getReturnCode() == -102){
             //invalid username or password
-            System.out.println("Please ensure the username and password are at least 1 character.");
+            System.out.println("Please ensure the username and password are not blank. Please try again.");
             return false;
          }
         else if(loginAttemptReturn.getReturnCode() == -103){
@@ -342,12 +341,10 @@ public class UserInterfaceController {
         //Prompt for user input for username and password
         System.out.print("Please enter your username: ");
         String usernameInput = inputReader.next();
-        System.out.print("Please enter the location of your backup: ");
+        System.out.print("Please enter the exact file location of your backup: ");
         String locationInput = inputReader.next();
-        System.out.print("Please enter the type of persistence used for you backup: ");
-        String typeInput = inputReader.next();
 
-        //rfbReturn = ProfileBackupHandler.restoreFromBackup(locationInput, typeInput, usernameInput);
+        rfbReturn = ProfileBackupHandler.restoreFromBackup(locationInput, PersistenceFactory.persistenceType.JsonFile, usernameInput);
 
         return false;
     }
