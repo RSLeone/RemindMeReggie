@@ -263,6 +263,31 @@ public class UserInterfaceController {
 
             if(userChoice == 11){
                 //search for events. From here, the user can find an event and edit/remove it if they wish.
+                AbstractEvent foundEvent = null;
+                foundEvent = searchforEvent();
+
+                //if an event is found, ask to edit or delete
+                if(foundEvent != null){
+                    
+                    String editInput = null;
+                    //prompt user to edit/delete found event if they wish
+                    System.out.println("Would you like to edit the found event? (Yes/No)");
+                    editInput = inputReader.next();
+
+                    if(editInput.equalsIgnoreCase("Yes")){
+                        //edit event
+                        editEvent();
+                    }
+                    else{
+                        System.out.println("Would you like to delete the found event? (Yes/No)");
+                        editInput= inputReader.next();
+
+                        if(editInput.equalsIgnoreCase("Yes")){
+                            //delete event
+                            REVISIT
+                        }
+                    }
+                }
             }
         }
         
@@ -917,9 +942,9 @@ public class UserInterfaceController {
         return false;
     }
 
-    //private helper method for searching for events
-    private AbstractEvent searchForEvent(){
-        AbstractEvent e;
+    //private helper method for input validation in searching for events
+    //returns the user's choice for option, 0 if invalid input
+    private int searchForEventValidation(){
         //prompt user to edit username, password, or delete profile
         String[] searchEventOptions = new String[]{"1. Start Date", "2. Severity", "3. Type"};
         int searchInput = 0;
@@ -936,12 +961,101 @@ public class UserInterfaceController {
         }
         else{
             System.out.println("Please enter a number corresponding to an action. Do not enter a letter or symbol. Please try again.");
-            return false;
+            searchInput = 0;
+            return searchInput;
         }
 
         if(searchInput <0 || searchInput >3){
             System.out.println("The number you entered does not correspond to an option. Please try again.");
+            searchInput = 0;
+            return searchInput;
         }
+        return searchInput;
+    }
+
+    //private helper method for searchforEvents
+    private AbstractEvent searchforEvent(){
+        //if no events exist, exit
+        if(ProfileHandler.getCurrentProfile().getEvents().size() == 0){
+            System.out.println("No events exist.");
+            return null;
+        }
+
+        //pair that will be returned upon searching
+        Pair<AbstractEvent, Returns> returnPair = null;
+        Returns returnAttempt = null;
+
+        //continously checks for input validation until correct
+        int searchInput = 0;
+        while(searchInput ==0){
+            searchInput = searchForEventValidation();
+        }
+
+        AbstractEvent foundEvent = null;
+
+        //if searching by start date
+        if(searchInput == 1){
+            REVISIT
+        }
+        //searching by severity
+        if(searchInput ==2){
+            int severityInput = 0;
+            System.out.println("Please enter the severity level of the event you wish to search for.");
+            if(inputReader.hasNextInt()){
+                severityInput = inputReader.nextInt();
+            }
+            else{
+                System.out.println("Please enter a number corresponding to an action. Do not enter a letter or symbol. Please try again.");
+                return null;
+            }
+
+            returnPair= EventHandler.searchForEventSeverity(ProfileHandler.getCurrentProfile(), severityInput);
+            returnAttempt = returnPair.getValue();
+        }
+        //searching by type
+        if(searchInput == 3){
+            String typeInput = null;
+            System.out.println("Please enter the event type you wish to search for: ");
+            typeInput = inputReader.next();
+
+            returnPair = EventHandler.searchForEventType(ProfileHandler.getCurrentProfile(), typeInput);
+            returnAttempt = returnPair.getValue();
+        }
+
+
+        //check to see if returned event was valid
+        if(returnAttempt.getReturnCode() == 0){
+            //success
+            System.out.println("Event successfully found.");
+            foundEvent = returnPair.getKey();
+        }
+        else if (returnAttempt.getReturnCode() == -2){
+            //invalid event type
+            System.out.println("Invalid Event Type. Please ensure the event type is between 1 and 50 characters. Please try again.");
+            return null;
+        }
+        else if (returnAttempt.getReturnCode() == -3){
+            //invalid severity level
+            System.out.println("Invalid severity level. Please ensure the severity level is between 1 and 5. Please try again.");
+            return null;
+        }
+        else{
+            System.out.println("Unable to find event. Please try again.");
+            return null;
+        }
+        
+        return foundEvent;
+    }
+
+    private boolean editEvent(AbstractEvent foundEvent){
+        //able to edit name, start time, end time, severity, frequency
+        String editEventInput = null;
+
+        //ask user if they wish to edit each attribute
+        System.out.println("Would you like to edit the event name? (Yes/No)");
+        editEventInput = inputReader.next();
+        
+
         return false;
     }
 
