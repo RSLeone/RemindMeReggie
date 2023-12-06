@@ -44,6 +44,7 @@ public class UserInterfaceController {
         while(true){
             
             System.out.println("Please enter the number corresponding to the action you wish to do.");
+            System.out.println();
             for(String choice: loginOptions ){
                 System.out.println(choice);
             }
@@ -92,10 +93,9 @@ public class UserInterfaceController {
 
             //if user restores from backup
             if (userChoice == 4){
-
+                restoreFromBackup();
             }
             
-            //inputReader.close();
         }
 
     }
@@ -109,7 +109,7 @@ public class UserInterfaceController {
         String[] userOptions = new String[]{"1. Logout", "2. Edit Profile", "3. Display Summary",
                                             "4. View Past Events", "5. Create Profile Backup", "6. Generate Next Step to Complete",
                                             "7. Import from Calendar File (.ics)", "8. Export to Calendar File (.ics)", "9. Add Monitored Event",
-                                            "10. Edit Monitored Event", "11. Add Event", "12. Search for Event"};
+                                            "10. Add Event", "11. Search for Event"};
 
         //display possible options indefinitely until user quits
         while(true){
@@ -146,28 +146,51 @@ public class UserInterfaceController {
 
             if(userChoice ==2){
                 //if user edits profile
-                //repeats until successful operation
-                //delete profile is an extended use case, prompt user for that option
-                System.out.println("Would you like to delete the current profile? (Yes/No) :");
-                String deleteProfileInput = inputReader.next();
+                //prompt user to edit username, password, or delete profile
+                String[] editProfileOptions = new String[]{"1. Edit username", "2. Edit Password", "3. Delete Profile"};
+                int editProfileInput = 0;
 
-                if(deleteProfileInput.equalsIgnoreCase("Yes")){
+                System.out.println();
+                System.out.println("Please enter the number corresponding to the action you wish to do.");
+                for(String choice: editProfileOptions ){
+                    System.out.println(choice);
+                }
+
+                //input validation. Checks if input is a number within the valid range.
+                if(inputReader.hasNextInt()){
+                    editProfileInput = inputReader.nextInt();
+                }
+                else{
+                    System.out.println("Please enter a number corresponding to an action. Do not enter a letter or symbol. Please try again.");
+                }
+
+                if(editProfileInput <0 || editProfileInput >3){
+                    System.out.println("The number you entered does not correspond to an option. Please try again.");
+                }
+                
+                if(editProfileInput == 3){
                     //delete profile
                     //won't repeat since no input is required
                     deleteProfile();
+
+                    //will exit to main menu since profile is gone
+                    break;
                 }
-                else{
+                if(editProfileInput ==1){
                     //don't delete profile
                     boolean success = false;
                     while(!success){
                         success = editUsername();
                     }
-                    success = false;
+                }
+                if(editProfileInput == 2){
+                    boolean success = false;
                     while(!success){
                         success = editPassword();
                     }
                 }
-                
+                    
+                    
             }
 
             if(userChoice == 3){
@@ -231,8 +254,15 @@ public class UserInterfaceController {
             }
 
             if(userChoice == 10){
-                //edit monitored event
-                //delete monitored event is an extended use case. Prompt user for that option
+                //add regular event
+                boolean success = false;
+                while(!success){
+
+                }
+            }
+
+            if(userChoice == 11){
+                //search for events. From here, the user can find an event and edit/remove it if they wish.
             }
         }
         
@@ -304,12 +334,12 @@ public class UserInterfaceController {
         } 
         else if(createProfileAttemptReturn.getReturnCode() == -101){
             //invalid username
-            System.out.println("Please ensure the username is at least 1 character");
+            System.out.println("Please ensure the username is not blank. Please try again.");
             return false;
          }
          else if(createProfileAttemptReturn.getReturnCode() == -102){
             //invalid password
-            System.out.println("Please ensure your password is at least 8 characters long.");
+            System.out.println("Please ensure your password is at least 8 characters long. Please try again.");
             return false;
          }
          else if(createProfileAttemptReturn.getReturnCode() == -103){
@@ -335,18 +365,23 @@ public class UserInterfaceController {
 
     //helper method for restoring from backup
     private boolean restoreFromBackup(){
-
-        boolean rfbReturn;
-
+        boolean rfbsuccess = false;
         //Prompt for user input for username and password
         System.out.print("Please enter your username: ");
         String usernameInput = inputReader.next();
         System.out.print("Please enter the exact file location of your backup: ");
         String locationInput = inputReader.next();
 
-        rfbReturn = ProfileBackupHandler.restoreFromBackup(locationInput, PersistenceFactory.persistenceType.JsonFile, usernameInput);
+        rfbsuccess= ProfileBackupHandler.restoreFromBackup(locationInput, PersistenceFactory.persistenceType.JsonFile, usernameInput);
 
-        return false;
+        if(rfbsuccess){
+            System.out.println("Restoration successful.");
+            return true;
+        }
+        else{
+            System.out.println("Failed to restore profile. Please try again.");
+            return false;
+        }
     }
 
     //private helper method for logging out
@@ -554,7 +589,11 @@ public class UserInterfaceController {
         
         if(addMonitoredEventAttempt.getReturnCode() == 0){
             //success
-            System.out.println("Monitored Event added successfully");
+            System.out.println("Monitored Event(s) added successfully.");
+
+            //adds additional monitored events in accordance to the frequency and endDate
+
+            //EventHandler.addMonitoredEvent(ProfileHandler.getCurrentProfile(), eventNameInput, startDateTime, endDateTime, eventTypeInput, false, severityLevelInput, frequencyChoice);
             return true;
         }
         else if (addMonitoredEventAttempt.getReturnCode() == -1){
@@ -576,6 +615,8 @@ public class UserInterfaceController {
             System.out.println("Unable to add monitored event. Please try again.");
             return false;
         }
+
+        
         
     }
 
@@ -675,7 +716,7 @@ public class UserInterfaceController {
             success= ProfileHandler.deleteCurrentProfile();
 
             if(success){
-                System.out.println("Profile Deleted Successfully");
+                System.out.println("Profile Deleted Successfully. Returning to main menu.");
                 return true;
             }
             else{
@@ -869,6 +910,39 @@ public class UserInterfaceController {
             return false;
         }
 
+    }
+
+    //private helper method for editing monitored event
+    private boolean editMonitoredEvent(){
+        return false;
+    }
+
+    //private helper method for searching for events
+    private AbstractEvent searchForEvent(){
+        AbstractEvent e;
+        //prompt user to edit username, password, or delete profile
+        String[] searchEventOptions = new String[]{"1. Start Date", "2. Severity", "3. Type"};
+        int searchInput = 0;
+
+        System.out.println();
+        System.out.println("Please enter the number corresponding to the action you wish to do.");
+        for(String choice: searchEventOptions ){
+            System.out.println(choice);
+        }
+
+        //input validation. Checks if input is a number within the valid range.
+        if(inputReader.hasNextInt()){
+            searchInput = inputReader.nextInt();
+        }
+        else{
+            System.out.println("Please enter a number corresponding to an action. Do not enter a letter or symbol. Please try again.");
+            return false;
+        }
+
+        if(searchInput <0 || searchInput >3){
+            System.out.println("The number you entered does not correspond to an option. Please try again.");
+        }
+        return false;
     }
 
 }
