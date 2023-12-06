@@ -36,7 +36,7 @@ import net.fortuna.ical4j.util.RandomUidGenerator;
 
 public class CalanderHandler {
     
-    public boolean exportToCalander(String path, Profile p){
+    public static boolean exportToCalander(String path, Profile p){
         try{
             Calendar calendar = new Calendar();
 
@@ -124,7 +124,7 @@ public class CalanderHandler {
         return false;
     }
 
-    public ArrayList<AbstractEvent> importFromCalander(String path){
+    public static ArrayList<AbstractEvent> importFromCalander(String path){
         CalendarBuilder builder = new CalendarBuilder();
 
         ArrayList<AbstractEvent> returnVal = new ArrayList<>();
