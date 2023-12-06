@@ -167,17 +167,17 @@ public class EventHandler {
                 return new Pair<AbstractEvent, Returns> (events.get(i),Returns.SUCCESS);
             }
         }
-        return new Pair<AbstractEvent, Returns> (null, Returns.SUCCESS);
+        return new Pair<AbstractEvent, Returns> (null, Returns.EVENT_DOES_NOT_EXIST);
     }
 
-    public static AbstractEvent searchForEventDateTime(Profile p, LocalDateTime dateTime) {
+    public static Pair<AbstractEvent, Returns> searchForEventDateTime(Profile p, LocalDateTime dateTime) {
         ArrayList<AbstractEvent> events = p.getEvents();
         for(int i = 0; i < events.size(); i++){
             if (events.get(i).getStartDateTime() == dateTime){
-                return events.get(i);
+                return new Pair<AbstractEvent, Returns> (events.get(i), Returns.SUCCESS);
             }
         }
-        return null;
+        return new Pair<AbstractEvent, Returns> (null, Returns.EVENT_DOES_NOT_EXIST);
     }
     
     public static Pair<AbstractEvent, Returns> searchForEventType(Profile p, String type) {
@@ -192,7 +192,7 @@ public class EventHandler {
                 return new Pair<AbstractEvent, Returns> (events.get(i), Returns.SUCCESS);
             }
         }
-        return new Pair<AbstractEvent, Returns> (null, Returns.SUCCESS);
+        return new Pair<AbstractEvent, Returns> (null, Returns.EVENT_DOES_NOT_EXIST);
     }
 
     public static ArrayList<AbstractEvent> sortBySeverity(Profile p, AbstractEvent.Frequencies frequency) {

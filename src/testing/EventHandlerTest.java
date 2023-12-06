@@ -276,37 +276,50 @@ public class EventHandlerTest {
     @Test
     public void searchForEventSeverityValidTest() {
         Pair<AbstractEvent, Returns> result = EventHandler.searchForEventSeverity(p, severity);
-        Assert.assertEquals((long) result.getValue().getReturnCode(), 0);
+        Assert.assertEquals(result.getValue().getReturnCode(), 0);
     }
 
     @Test
     public void searchForEventSeverityInvalidSeverityTest() {
         Pair<AbstractEvent, Returns> result = EventHandler.searchForEventSeverity(p, -1);
-        Assert.assertEquals((long) result.getValue().getReturnCode(), -3);
+        Assert.assertEquals(result.getValue().getReturnCode(), -3);
+    }
+
+    @Test
+    public void searchForEventSeverityNoEventFoundTest() {
+        Pair<AbstractEvent, Returns> result = EventHandler.searchForEventSeverity(p, 5);
+        Assert.assertEquals( result.getValue().getReturnCode(), -4);
     }
     
     @Test
     public void searchForEventDateTimeEventFoundTest() {
-        AbstractEvent result = EventHandler.searchForEventDateTime(p, startDateTime);
-        Assert.assertEquals(result, p.getEvents().get(0));
+        Pair<AbstractEvent, Returns> result = EventHandler.searchForEventDateTime(p, startDateTime);
+        Assert.assertEquals((AbstractEvent) result.getKey(), p.getEvents().get(0));
     }
 
     @Test
     public void searchForEventDateTimeEventNotFoundTest() {
-        AbstractEvent result = EventHandler.searchForEventDateTime(p, LocalDateTime.now().plusMinutes(100));
-        Assert.assertEquals(result, null);
+        Pair<AbstractEvent, Returns> result = EventHandler.searchForEventDateTime(p, LocalDateTime.now().plusMinutes(100));
+        Assert.assertEquals(result.getKey(), null);
+        Assert.assertEquals(result.getValue().getReturnCode(), -4);
     }
 
     @Test
     public void searchForEventTypeValidTest() {
         Pair<AbstractEvent, Returns> result = EventHandler.searchForEventType(p, type);
-        Assert.assertEquals((long) result.getValue().getReturnCode(), 0);
+        Assert.assertEquals (result.getValue().getReturnCode(), 0);
     }
 
     @Test
     public void searchForEventTypeInvalidTypeTest() {
         Pair<AbstractEvent, Returns> result = EventHandler.searchForEventType(p, "");
-        Assert.assertEquals((long) result.getValue().getReturnCode(), -2);
+        Assert.assertEquals(result.getValue().getReturnCode(), -2);
+    }
+
+    @Test
+    public void searchForEventTypeNoEventFoundTest() {
+        Pair<AbstractEvent, Returns> result = EventHandler.searchForEventType(p, "test2");
+        Assert.assertEquals(result.getValue().getReturnCode(), -4);
     }
 
     @Test
@@ -342,13 +355,13 @@ public class EventHandlerTest {
     @Test
     public void viewPastEventsValidTest() {
         Pair<ArrayList<AbstractEvent>, Returns> result = EventHandler.viewPastEvents(p, startDateTime, endDateTime);
-        Assert.assertEquals((long) result.getValue().getReturnCode(), 0);
+        Assert.assertEquals(result.getValue().getReturnCode(), 0);
     }
 
     @Test
     public void viewPastEventsNoEventsFoundTest() {
         LocalDateTime testDate = LocalDateTime.now().plusMinutes(100);
         Pair<ArrayList<AbstractEvent>, Returns> result = EventHandler.viewPastEvents(p, testDate, testDate);
-        Assert.assertEquals((long) result.getValue().getReturnCode(), -5);
+        Assert.assertEquals(result.getValue().getReturnCode(), -5);
     }
 }
