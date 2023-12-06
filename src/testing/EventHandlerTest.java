@@ -78,6 +78,16 @@ public class EventHandlerTest {
     }
 
     @Test
+    public void addEventInvalidEndDateTimeTest() {
+        int prevSize = p.getEvents().size();
+        Returns result = EventHandler.addEvent(p, name, startDateTime, endDateTime.minusMinutes(15), type, severity, frequency);
+        int curSize = p.getEvents().size();
+
+        Assert.assertEquals(result.getReturnCode(), -6);
+        Assert.assertEquals(prevSize, curSize);
+    }
+
+    @Test
     public void editEventNameValidTest() {
         String prevName = p.getEvents().get(0).getEventName();
         AbstractEvent e = p.getEvents().get(0);

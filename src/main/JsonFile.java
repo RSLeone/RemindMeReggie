@@ -28,7 +28,7 @@ public class JsonFile extends Persistence{
             writer.close();
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            
         }
         
         return false;
@@ -46,7 +46,7 @@ public class JsonFile extends Persistence{
         }
 
         catch (IOException e){
-            e.printStackTrace();
+            
         }
 
         if(fileContent.isEmpty()){
