@@ -66,6 +66,10 @@ public class EventHandler {
             return Returns.EVENT_DOES_NOT_EXIST;
         }
 
+        if (endDateTime.compareTo(e.getStartDateTime()) < 0) {
+            return Returns.INVALID_END_DATE_TIME;
+        }
+
         e.setEndTime(endDateTime);
         return Returns.SUCCESS;
     }
@@ -266,5 +270,21 @@ public class EventHandler {
             return new Pair<ArrayList<AbstractEvent>,Returns>(null, Returns.NO_EVENTS_TO_DISPLAY);
         }
         return new Pair<ArrayList<AbstractEvent>,Returns>(pastEvents, Returns.SUCCESS);
+    }
+
+    public static Returns checkCompletion(Profile p) {
+        ArrayList<AbstractEvent> events = p.getEvents();
+        AbstractEvent curEvent;
+        if (events.size() == 0) {
+            return Returns.NO_EVENTS_TO_DISPLAY;
+        }
+
+        for (int i = 0; i < events.size(); i++) {
+            curEvent = events.get(i);
+            if(curEvent.getEndDateTime().compareTo(LocalDateTime.now()) < 0 && curEvent.getFrequency().equals(AbstractEvent.Frequencies.NOT_RECURRING)) { //Event is complete
+                curEvent.setComplete(true);
+            }
+        }
+        return Returns.SUCCESS;
     }
 }
