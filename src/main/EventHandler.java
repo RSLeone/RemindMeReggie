@@ -66,6 +66,10 @@ public class EventHandler {
             return Returns.EVENT_DOES_NOT_EXIST;
         }
 
+        if (endDateTime.compareTo(e.getStartDateTime()) < 0) {
+            return Returns.INVALID_END_DATE_TIME;
+        }
+
         e.setEndTime(endDateTime);
         return Returns.SUCCESS;
     }
