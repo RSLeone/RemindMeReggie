@@ -27,7 +27,7 @@ public class EventHandlerTest {
         endDateTime = LocalDateTime.now().plusMinutes(10);
         type = "test";
         severity = 0;
-        frequency = AbstractEvent.Frequencies.DAILY;
+        frequency = AbstractEvent.Frequencies.NOT_RECURRING;
 
         EventHandler.addEvent(p, name, startDateTime, endDateTime, type, severity, frequency);
     }
@@ -363,5 +363,29 @@ public class EventHandlerTest {
         LocalDateTime testDate = LocalDateTime.now().plusMinutes(100);
         Pair<ArrayList<AbstractEvent>, Returns> result = EventHandler.viewPastEvents(p, testDate, testDate);
         Assert.assertEquals(result.getValue().getReturnCode(), -5);
+    }
+
+    @Test
+    public void checkCompletionValidIncompleteTest() {
+        Returns result = EventHandler.checkCompletion(p);
+        Assert.assertEquals(result.getReturnCode(), 0);
+        Assert.assertEquals(p.getEvents().get(0).isComplete(), false);
+    }
+
+    @Test
+    public void checkCompetionValidCompleteTest() {
+        EventHandler.editEventStartDateTime(p, p.getEvents().get(0), LocalDateTime.now().minusMinutes(10));
+        EventHandler.editEventEndDateTime(p, p.getEvents().get(0), LocalDateTime.now().minusMinutes(1));
+
+        Returns result = EventHandler.checkCompletion(p);
+        Assert.assertEquals(result.getReturnCode(), 0);
+        Assert.assertEquals(p.getEvents().get(0).isComplete(), true);
+    }
+
+    @Test
+    public void checkCompletionInvalidTest() {
+        EventHandler.removeEvent(p, p.getEvents().get(0));
+        Returns result = EventHandler.checkCompletion(p);
+        Assert.assertEquals(result.getReturnCode(), -5);
     }
 }
