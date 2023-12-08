@@ -65,12 +65,14 @@ public class UserInterfaceController {
 
             //if user logs in
             if(userChoice ==1){
-                
-                //upon successful login, breaks loop, closes scanner, and returns to userInteraction
-                loginToProfile();
+                boolean success = false;
+                //upon successful login, breaks loop, and returns to userInteraction
+                success = loginToProfile();
 
+                if(success){
+                    break;
+                }
                 
-                break;
             }
 
             //if user creates a profile
@@ -101,8 +103,6 @@ public class UserInterfaceController {
     }
 
     private void displayUserOptions(){
-        //create scanner for user input
-        //inputReader
         int userChoice = 0;        
 
         //array of possible options for user
@@ -119,6 +119,7 @@ public class UserInterfaceController {
                 System.out.println(choice);
             }
 
+            inputReader.nextLine();
             //input validation. Checks if input is a number within the valid range.
             if(inputReader.hasNextInt()){
                 userChoice = inputReader.nextInt();
@@ -212,6 +213,7 @@ public class UserInterfaceController {
             if(userChoice == 4){
                 //view past events
                 viewPastEvents();
+                userChoice = 0;
             }
 
             if(userChoice == 5){
@@ -221,38 +223,43 @@ public class UserInterfaceController {
                 while(!success){
                     success = createProfileBackup();
                 }
+                userChoice = 0;
             }
 
             if(userChoice == 6){
                 //Generate Next Step to complete
                 //no need to repeat since no input required
                 generateNextStep();
+                userChoice = 0;
             }
 
             if(userChoice == 7){
                 //import calendar from .ics file
                 importCalander();
+                userChoice = 0;
             }
 
             if(userChoice == 8){
                 //export event list to .ics file
                 exportListToCalander();
+                userChoice = 0;
             }
 
             if(userChoice == 9){
-                //add monitored event
-                //repeat until successful entry
+                //add monitored event, add respective steps
                 boolean success = false;
-                
-                    //success = addMonitoredEvent();
+                success = addEvent();
+
+                if(success)
+                    addSteps();
+
+                userChoice = 0;
             }
 
             if(userChoice == 10){
                 //add regular event
-                boolean success = false;
-                while(!success){
-
-                }
+                addEvent();
+                userChoice = 0;
             }
 
             if(userChoice == 11){
@@ -285,6 +292,7 @@ public class UserInterfaceController {
                 else{
                     System.out.println("The event could not be found.");
                 }
+                userChoice = 0;
             }
         }
         
@@ -423,7 +431,7 @@ public class UserInterfaceController {
     }
 
     //private helper method for adding events. Parameter is true if monitored event, false if regular event
-    private boolean addEvent(boolean MonitoredEventStatus){
+    private boolean addEvent(){
         String eventNameInput = null;
         String eventTypeInput = null;
         int severityLevelInput = -1;
@@ -439,17 +447,25 @@ public class UserInterfaceController {
         AbstractEvent.Frequencies frequencyChoice = null;
 
         //prompt for user input and validate
-        System.out.println("Please enter the name for the event (Max 50 characters): ");
+        System.out.print("Please enter the name for the event (Max 50 characters): ");
         eventNameInput =  inputReader.next();
-        System.out.println("Please enter the event type (Max 50 characters): ");
+        inputReader.nextLine();
+        System.out.print("Please enter the event type (Max 50 characters): ");
         eventTypeInput = inputReader.next();
-        System.out.println("Please enter the numerical severity level of the event from 1 to 5: ");
+        inputReader.nextLine();
+        System.out.print("Please enter the numerical severity level of the event from 1 to 5: ");
         if(!inputReader.hasNextInt()){
             System.out.println("The severity level must be an integer from 1 to 5. Please try again.");
             return false;
         }
+        else{
+            severityLevelInput = inputReader.nextInt();
+        }
+        inputReader.nextLine();
 
-        System.out.println("Please enter the starting year as a positive number (ex:2023. Input must be a positive number): ");
+
+        System.out.print("Please enter the starting year as a positive number (ex:2023. Input must be a positive number): ");
+        
         if(!inputReader.hasNextInt()){
             System.out.println("Please ensure the year is an integer. Please try again.");
             return false;
@@ -461,7 +477,9 @@ public class UserInterfaceController {
                 return false;
             }
         }
-        System.out.println("Please enter the starting month as a positive number (ex:February is 2. Input must be between 1 and 12): ");
+
+        inputReader.nextLine();
+        System.out.print("Please enter the starting month as a positive number (ex:February is 2. Input must be between 1 and 12): ");
         if(!inputReader.hasNextInt()){
             System.out.println("Please ensure the month is a positive integer. Please try again.");
             return false;
@@ -473,7 +491,9 @@ public class UserInterfaceController {
                 return false;
             }
         }
-        System.out.println("Please enter the starting day as a positive number (ex:22. Input must be between 1 and 31): ");
+
+        inputReader.nextLine();
+        System.out.print("Please enter the starting day as a positive number (ex:22. Input must be between 1 and 31): ");
         if(!inputReader.hasNextInt()){
             System.out.println("Please ensure the day is an integer. Please try again.");
             return false;
@@ -492,7 +512,8 @@ public class UserInterfaceController {
             }
         }
 
-        System.out.println("Please enter the starting hour for the event as a number in the 24-hour clock. (ex: 2pm is 14. Input must be between 0 and 23)");
+        inputReader.nextLine();
+        System.out.print("Please enter the starting hour for the event as a number in the 24-hour clock. (ex: 2pm is 14. Input must be between 0 and 23) : ");
         if(!inputReader.hasNextInt()){
             System.out.println("Please ensure the hour is an integer. Please try again.");
             return false;
@@ -504,7 +525,9 @@ public class UserInterfaceController {
                 return false;
             }
         }
-        System.out.println("Please enter the starting minute of the event as an integer. Input must be between 0 and 59");
+
+        inputReader.nextLine();
+        System.out.print("Please enter the starting minute of the event as an integer. Input must be between 0 and 59 : ");
         if(!inputReader.hasNextInt()){
             System.out.println("Please ensure the minute is an integer. Please try again.");
             return false;
@@ -519,7 +542,7 @@ public class UserInterfaceController {
 
         startDateTime = LocalDateTime.of(yearInput,monthInput,dayInput,hourInput,minuteInput);
 
-        System.out.println("Please enter the ending year as a positive number (ex:2023. Input must be a positive number): ");
+        System.out.print("Please enter the ending year as a positive number (ex:2023. Input must be a positive number): ");
         if(!inputReader.hasNextInt()){
             System.out.println("Please ensure the year is an integer. Please try again.");
             return false;
@@ -531,7 +554,9 @@ public class UserInterfaceController {
                 return false;
             }
         }
-        System.out.println("Please enter the ending month as a positive number (ex:February is 2. Input must be between 1 and 12): ");
+
+        inputReader.nextLine();
+        System.out.print("Please enter the ending month as a positive number (ex:February is 2. Input must be between 1 and 12): ");
         if(!inputReader.hasNextInt()){
             System.out.println("Please ensure the month is a positive integer. Please try again.");
             return false;
@@ -543,7 +568,7 @@ public class UserInterfaceController {
                 return false;
             }
         }
-        System.out.println("Please enter the ending day as a positive number (ex:22. Input must be between 1 and 31): ");
+        System.out.print("Please enter the ending day as a positive number (ex:22. Input must be between 1 and 31): ");
         if(!inputReader.hasNextInt()){
             System.out.println("Please ensure the day is an integer. Please try again.");
             return false;
@@ -562,7 +587,7 @@ public class UserInterfaceController {
             }
         }
 
-        System.out.println("Please enter the ending hour for the event as a number in the 24-hour clock. (ex: 2pm is 14. Input must be between 0 and 23)");
+        System.out.print("Please enter the ending hour for the event as a number in the 24-hour clock. (ex: 2pm is 14. Input must be between 0 and 23) : ");
         if(!inputReader.hasNextInt()){
             System.out.println("Please ensure the hour is an integer. Please try again.");
             return false;
@@ -574,7 +599,7 @@ public class UserInterfaceController {
                 return false;
             }
         }
-        System.out.println("Please enter the ending minute of the event as an integer. Input must between 0 and 59");
+        System.out.print("Please enter the ending minute of the event as an integer. Input must between 0 and 59 : ");
         if(!inputReader.hasNextInt()){
             System.out.println("Please ensure the minute is an integer. Please try again.");
             return false;
@@ -589,7 +614,7 @@ public class UserInterfaceController {
 
         endDateTime = LocalDateTime.of(yearInput,monthInput,dayInput,hourInput,minuteInput);
 
-        System.out.println("What is the frequency of this event? (Not-Recurring, Daily,Weekly,Monthly, or Yearly)");
+        System.out.print("What is the frequency of this event? (Not-Recurring, Daily,Weekly,Monthly, or Yearly) : ");
         frequencyInput = inputReader.next();
 
         if(frequencyInput.equalsIgnoreCase("Not-Recurring") || frequencyInput.equalsIgnoreCase("not recurring"))
@@ -612,9 +637,7 @@ public class UserInterfaceController {
         
         if(addMonitoredEventAttempt.getReturnCode() == 0){
             //success
-            System.out.println("Event added successfully. Adding recurring events...");
-
-            //adds additional monitored events in accordance to the frequency and endDate
+            System.out.println("Event added successfully");
             
             return true;
         }
@@ -685,15 +708,16 @@ public class UserInterfaceController {
     //private helper method for adding steps - work in progress
     private boolean addSteps(){
         //if the specified event is an monitored event, ask for step information
-       // if(MonitoredEventStatus){
             int numSteps = 0;
             String editEventInput = null;
+            int listSize = 0;
             System.out.println("How many steps are there in this event? Please enter a positive number.");
             if(inputReader.hasNextInt()){
                 numSteps = inputReader.nextInt();
 
                 if(numSteps <= 0){
                     System.out.println("Do not enter a nonpositive number. Please try again.");
+                    return false;
                 }
                 else{
                     Step stepToAdd = null;
@@ -701,19 +725,27 @@ public class UserInterfaceController {
 
                     //create as many steps as the user specified
                     for(int i = 1; i<=numSteps; i++){
+                        listSize = ProfileHandler.getCurrentProfile().getEvents().size();
+
                         System.out.println("What is Step #" + i + "'s title?");
                         editEventInput = inputReader.next();
                         stepName = editEventInput;
                         stepToAdd = new Step(stepName, i, false);
+                        
+                        //grab monitoredevent to edit
+                        MonitoredEvent m = (MonitoredEvent)(ProfileHandler.getCurrentProfile().getEvents().get(listSize-1));
+                        EventHandler.addStep(m, stepToAdd);
                     }
+
+                    System.out.println("Monitored event steps created successfully");
+                    return true;
                 }
             }
             else{
                 System.out.println("Do not enter a letter or number. Please try again.");
+                return false;
             }
-
-      //  }
-       return false;
+       
     }
 
     //private helper method for editing username
@@ -1000,6 +1032,7 @@ public class UserInterfaceController {
         }
     }
 
+    //private helper method for exporting event listto Calander
     private boolean exportListToCalander(){
         String calanderFilePath = null;
         System.out.println("Please enter the exact file location of where to wish to send the export :");
