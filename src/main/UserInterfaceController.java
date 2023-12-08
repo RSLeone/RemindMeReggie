@@ -1014,7 +1014,7 @@ public class UserInterfaceController {
         System.out.println("Please enter the exact file location of the calendar you wish to import (.ics) :");
         calanderFilePath = inputReader.next();
 
-        importedList = CalanderHandler.importFromCalander(calanderFilePath);
+        importedList = CalendarHandler.importFromCalander(calanderFilePath);
         
         if(importedList == null){
             //if import fails
@@ -1040,7 +1040,7 @@ public class UserInterfaceController {
 
         boolean success = false;
 
-        success = CalanderHandler.exportToCalander(calanderFilePath,ProfileHandler.getCurrentProfile());
+        success = CalendarHandler.exportToCalander(calanderFilePath,ProfileHandler.getCurrentProfile());
 
         if(success){
             System.out.println("Calander exported successfully.");
