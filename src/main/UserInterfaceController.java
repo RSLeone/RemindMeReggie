@@ -189,6 +189,7 @@ public class UserInterfaceController {
             if(userChoice == 3){
                 //display summary
                 //no need to repeat since no input is required
+                EventHandler.checkCompletion(ProfileHandler.getCurrentProfile());
                 boolean success = false;
                 
                 success = displaySummary();
@@ -208,6 +209,7 @@ public class UserInterfaceController {
 
             if(userChoice == 4){
                 //view past events
+                EventHandler.checkCompletion(ProfileHandler.getCurrentProfile());
                 viewPastEvents();
                 userChoice = 0;
             }
