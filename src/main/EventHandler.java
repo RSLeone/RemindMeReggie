@@ -261,7 +261,7 @@ public class EventHandler {
         for(int i = 0; i < events.size(); i++){
             start = events.get(i).getStartDateTime();
             end = events.get(i).getEndDateTime();
-            if ((start.compareTo(startRange) >= 0) && end.compareTo(endRange) <= 0){
+            if ((start.compareTo(startRange) >= 0) && end.compareTo(endRange) <= 0 && events.get(i).isComplete() == true){
                 pastEvents.add(events.get(i));
             }
         }
@@ -281,7 +281,7 @@ public class EventHandler {
 
         for (int i = 0; i < events.size(); i++) {
             curEvent = events.get(i);
-            if(curEvent.getEndDateTime().compareTo(LocalDateTime.now()) < 0 && curEvent.getFrequency().equals(AbstractEvent.Frequencies.NOT_RECURRING)) { //Event is complete
+            if(curEvent.getEndDateTime().compareTo(LocalDateTime.now()) < 0) { //Event is complete
                 curEvent.setComplete(true);
             }
         }
