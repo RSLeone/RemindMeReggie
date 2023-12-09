@@ -257,7 +257,7 @@ public class UserInterfaceController {
                 //add regular event
                 boolean success = false;
                 while(!success){
-                    addEvent();
+                    success = addEvent();
                 }
                 
                 userChoice = 0;
