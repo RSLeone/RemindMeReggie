@@ -177,7 +177,7 @@ public class EventHandler {
     public static Pair<AbstractEvent, Returns> searchForEventDateTime(Profile p, LocalDateTime dateTime) {
         ArrayList<AbstractEvent> events = p.getEvents();
         for(int i = 0; i < events.size(); i++){
-            if (events.get(i).getStartDateTime() == dateTime){
+            if (events.get(i).getStartDateTime().equals(dateTime)){
                 return new Pair<AbstractEvent, Returns> (events.get(i), Returns.SUCCESS);
             }
         }
@@ -192,7 +192,7 @@ public class EventHandler {
 
         ArrayList<AbstractEvent> events = p.getEvents();
         for(int i = 0; i < events.size(); i++){
-            if (events.get(i).getEventType() == type){
+            if (events.get(i).getEventType().equals(type)){
                 return new Pair<AbstractEvent, Returns> (events.get(i), Returns.SUCCESS);
             }
         }
@@ -246,6 +246,15 @@ public class EventHandler {
                 System.out.println("Type: " + event.getEventType());
                 System.out.println("Severity: " + event.getSeverityLevel());
                 System.out.println("Frequency: " + event.getFrequency());
+
+                if(event instanceof MonitoredEvent) {
+                    ArrayList<Step> stepList = ((MonitoredEvent)event).getSteps();
+                    for (int j = 0; j < stepList.size(); j++) {
+                        Step step = stepList.get(j);
+                        System.out.println("Step " + (j + 1) + ": " + step.getStepName());
+                    }
+                }
+
                 System.out.println();
             }
         }
