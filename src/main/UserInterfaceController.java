@@ -1,18 +1,8 @@
 package main;
 import java.util.Scanner;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import javafx.util.Pair;
-
-//import all other classes
-import main.Persistence;
-import main.PersistenceFactory;
-import main.Profile;
-import main.PersistenceFactory.persistenceType;
-import main.ProfileBackupHandler;
-import main.ProfileHandler;
-import main.EventHandler;
 
 public class UserInterfaceController {
     static final Scanner inputReader = new Scanner(System.in);
@@ -168,10 +158,14 @@ public class UserInterfaceController {
                 if(editProfileInput == 3){
                     //delete profile
                     //won't repeat since no input is required
-                    deleteProfile();
+                    boolean success = false;
+                    success = deleteProfile();
 
                     //will exit to main menu since profile is gone
-                    break;
+                    if(success){
+                        break;
+                    }
+                    
                 }
                 if(editProfileInput ==1){
                     //don't delete profile
@@ -248,7 +242,10 @@ public class UserInterfaceController {
             if(userChoice == 9){
                 //add monitored event, add respective steps
                 boolean success = false;
-                success = addEvent();
+                while(!success){
+                    success = addEvent();
+                }
+                
 
                 if(success)
                     addSteps();
@@ -258,7 +255,11 @@ public class UserInterfaceController {
 
             if(userChoice == 10){
                 //add regular event
-                addEvent();
+                boolean success = false;
+                while(!success){
+                    addEvent();
+                }
+                
                 userChoice = 0;
             }
 
@@ -663,48 +664,7 @@ public class UserInterfaceController {
         
     }
 
-   // eventhandler?????
-    //private helper method for adding recurring events
-    private boolean addRecurringEvents(AbstractEvent eventToAdd){
-        AbstractEvent.Frequencies frequency = eventToAdd.getFrequency();
-        int yearInput = -1;
-        LocalDateTime startDateTime = eventToAdd.getStartDateTime();
-        LocalDateTime initialEndDateTime = eventToAdd.getEndDateTime();
-        if (frequency == AbstractEvent.Frequencies.YEARLY) {
-
-            //ask user when recurrence ends and find time difference
-            System.out.println("Please enter the ending year of the reccurence as a positive number (ex:2023. Input must be a positive number): ");
-            if(!inputReader.hasNextInt()){
-                System.out.println("Please ensure the year is an integer. Please try again.");
-                return false;
-            }
-            else{
-                yearInput = inputReader.nextInt();
-                if(yearInput <=0){
-                    System.out.println("Please ensure the year is a positive integer. Please try again.");
-                    return false;
-                }
-            }
-            
-            LocalDateTime endDateTime = LocalDateTime.of(yearInput,eventToAdd.getStartDateTime().getMonth(),eventToAdd.getStartDateTime().getDayOfMonth(),eventToAdd.getStartDateTime().getHour(),eventToAdd.getStartDateTime().getMinute());
-            long yearsBetween = 0;
-            yearsBetween = ChronoUnit.YEARS.between(eventToAdd.getStartDateTime(), endDateTime);
-            int listSize = 0;
-
-            //create as many events as required for recurrence. Copies contents of initial event and edits to accommodate for new DateTime
-            for(int i = 1; i<=yearsBetween; i++){
-                ProfileHandler.getCurrentProfile().getEvents().add(eventToAdd);
-                listSize = ProfileHandler.getCurrentProfile().getEvents().size();
-
-                //edits event to change time
-                ProfileHandler.getCurrentProfile().getEvents().get(listSize-1).setStartTime(startDateTime.plusYears(i));
-                ProfileHandler.getCurrentProfile().getEvents().get(listSize-1).setStartTime(initialEndDateTime.plusYears(i));
-            }
-        }
-        return true;
-    }
-
-    
+       
     //private helper method for adding steps - work in progress
     private boolean addSteps(){
         //if the specified event is an monitored event, ask for step information
