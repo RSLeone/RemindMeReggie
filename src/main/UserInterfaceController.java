@@ -27,19 +27,17 @@ public class UserInterfaceController {
         //array of possible options for user
         String[] loginOptions = new String[]{"1. Log in", "2. Create Profile","3. Close", "4. Restore Backup"};
        
-
-        //create scanner for user input
         int userChoice = 0;
-
+        
         //display possible options indefinitely until user quits
         while(true){
-            
+           
             System.out.println("Please enter the number corresponding to the action you wish to do.");
-            System.out.println();
             for(String choice: loginOptions ){
                 System.out.println(choice);
             }
 
+            
             //input validation. Checks if input is a number within the valid range.
             if(inputReader.hasNextInt()){
                 userChoice = inputReader.nextInt();
@@ -58,6 +56,7 @@ public class UserInterfaceController {
                 boolean success = false;
                 //upon successful login, breaks loop, and returns to userInteraction
                 success = loginToProfile();
+                userChoice = 0;
 
                 if(success){
                     break;
@@ -74,6 +73,7 @@ public class UserInterfaceController {
                 while(!successfulCreation){
                     successfulCreation = createProfile();
                 }
+                userChoice = 0;
                 
             }
 
@@ -87,7 +87,9 @@ public class UserInterfaceController {
             if (userChoice == 4){
                 restoreFromBackup();
             }
-            
+
+            System.out.println();
+            inputReader.nextLine();
         }
 
     }
