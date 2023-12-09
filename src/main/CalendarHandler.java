@@ -1,18 +1,14 @@
 package main;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Optional;
 
 import main.Event.EventBuilder;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.ParseException;
 import java.time.Duration;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
@@ -23,20 +19,24 @@ import net.fortuna.ical4j.model.ParameterList;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.DtEnd;
-import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.RRule;
-import net.fortuna.ical4j.model.property.RecurrenceId;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.transform.recurrence.Frequency;
 import net.fortuna.ical4j.util.RandomUidGenerator;
 
 
-public class CalanderHandler {
+public class CalendarHandler {
     
     public static boolean exportToCalander(String path, Profile p){
+        if(p == null || path.equals("")){
+            return false;
+        }
+        if(p.getEvents().size() <= 0){
+            return false;
+        }
+
         try{
             Calendar calendar = new Calendar();
 
@@ -104,6 +104,21 @@ public class CalanderHandler {
                     calendar.add(recurringEvent);
                 }
 
+                else if(e.getFrequency() == AbstractEvent.Frequencies.YEARLY){
+                    LocalDateTime endTime = LocalDateTime.of(startDateTime.getYear(), startDateTime.getMonth(), startDateTime.getDayOfMonth(), endDateTime.getHour(), endDateTime.getMinute(), endDateTime.getSecond());
+                    Duration duration = Duration.between(startDateTime, endTime);
+                    
+                    Recur<Temporal> recur = new Recur.Builder<>().frequency(Frequency.YEARLY).build();
+
+                    VEvent recurringEvent = new VEvent(startDateTime, duration, e.getEventName());
+
+                    recurringEvent.add(ug.generateUid());
+                    recurringEvent.add(new RRule<>(recur));
+                    recurringEvent.add(new DtEnd<>(endTime));
+
+                    calendar.add(recurringEvent);
+                }
+
                 else{
                     return false;
                 }
@@ -117,8 +132,8 @@ public class CalanderHandler {
 
             return true;
         }
-        catch (Exception e){
-            e.printStackTrace();
+        catch (IOException e){
+            
         }
 
         return false;
@@ -147,18 +162,18 @@ public class CalanderHandler {
                         if(p instanceof RRule){
                             RRule r = (RRule)p;
                             
-                            if(r.getValue() == "DAILY")
+                            if(r.getValue().equals("FREQ=DAILY"))
                                 frequency = AbstractEvent.Frequencies.DAILY;
-                            else if(r.getValue() == "Weekly")
+                            else if(r.getValue() .equals( "FREQ=WEEKLY"))
                                 frequency = AbstractEvent.Frequencies.WEEKLY;
-                            else if(r.getValue() == "MONTHLY")
+                            else if(r.getValue() .equals( "FREQ=MONTHLY"))
                                 frequency = AbstractEvent.Frequencies.MONTHLY;
-                            else if(r.getValue() == "YEARLY")
+                            else if(r.getValue() .equals( "FREQ=YEARLY"))
                                 frequency = AbstractEvent.Frequencies.YEARLY;
                         }
                     }
                     
-                    Event e = (Event)(new EventBuilder()).eventName(event.getSummary().toString()).startDateTime(startDateTime).endDateTime(endDateTime).frequency(frequency).build();
+                    Event e = (Event)(new EventBuilder()).eventName(event.getSummary().get().getValue()).startDateTime(startDateTime).endDateTime(endDateTime).frequency(frequency).build();
                     returnVal.add(e);
                 }
             }
@@ -166,7 +181,7 @@ public class CalanderHandler {
             return returnVal;
         }
         catch (IOException | ParserException e){
-            e.printStackTrace();
+            
         }
         
         return null;
