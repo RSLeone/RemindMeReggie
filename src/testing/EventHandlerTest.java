@@ -354,6 +354,7 @@ public class EventHandlerTest {
 
     @Test
     public void viewPastEventsValidTest() {
+        p.getEvents().get(0).setComplete(true);
         Pair<ArrayList<AbstractEvent>, Returns> result = EventHandler.viewPastEvents(p, startDateTime, endDateTime);
         Assert.assertEquals(result.getValue().getReturnCode(), 0);
     }
