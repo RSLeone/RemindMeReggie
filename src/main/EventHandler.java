@@ -153,8 +153,8 @@ public class EventHandler {
 
     public static Returns addStep(MonitoredEvent m, Step s) {
         ArrayList<Step> steps = m.getSteps();
-        int newStepNum = m.getNextStepNumber();
-        m.setNextStepNumber(newStepNum + 1);
+        int newStepNum = m.getNextStepNumber() + 1;
+        m.setNextStepNumber(newStepNum);
         steps.add(s);
         return Returns.SUCCESS;
     }
@@ -227,7 +227,12 @@ public class EventHandler {
         }
         if (curNextEvent.getEndDateTime() != LocalDateTime.MAX) {
             ArrayList<Step> steps = ((MonitoredEvent)curNextEvent).getSteps();
-            return steps.get(0);
+            for (int i = 0; i < steps.size(); i++) {
+                if (steps.get(i).isComplete() == false) {
+                    return steps.get(i);
+                }
+            }
+            return null;
         }
         return null;
     }
@@ -295,5 +300,25 @@ public class EventHandler {
             }
         }
         return Returns.SUCCESS;
+    }
+
+    public static Returns setStepComplete(Profile p, MonitoredEvent e, int stepNumber) {
+        ArrayList<AbstractEvent> events = p.getEvents();
+
+        if (! events.contains(e)) {
+            return Returns.EVENT_DOES_NOT_EXIST;
+        }
+
+        ArrayList<Step> steps = e.getSteps();
+        for (int i = 0; i < steps.size(); i++) {
+            Step curStep = steps.get(i);
+            if (curStep.getStepNumber() == stepNumber) {
+                curStep.setComplete(true);
+                e.setNumCompletedSteps(e.getNumCompletedSteps() + 1);
+                return Returns.SUCCESS;
+            }
+        }
+        
+        return Returns.EVENT_DOES_NOT_EXIST;
     }
 }
