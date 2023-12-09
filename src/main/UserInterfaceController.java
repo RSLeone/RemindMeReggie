@@ -1504,7 +1504,7 @@ public class UserInterfaceController {
             if(editEventInput.equalsIgnoreCase("Yes")){
                 String stepName = null;
                 //add a step
-                System.out.println("What is the name of the event?");
+                System.out.println("What is the name of the step?");
                 stepName = inputReader.next();
 
                 //adds step to end of event
@@ -1512,7 +1512,12 @@ public class UserInterfaceController {
                 EventHandler.addStep((MonitoredEvent)foundEvent, nextStep);
 
             }
-
+            
+            System.out.println("Would you like to edit the completion of steps?");
+            editEventInput = inputReader.next();
+            if(editEventInput.equalsIgnoreCase("Yes")){
+                //edit the completion of steps
+            }
         }
 
         return true;
