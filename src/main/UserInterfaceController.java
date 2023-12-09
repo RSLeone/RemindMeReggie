@@ -1436,8 +1436,21 @@ public class UserInterfaceController {
                 System.out.println("Event doesn't exist. Please try again.");
                 return false;
             }
+            else if(editingAttempt.getReturnCode() == -6){
+                //invalid end date time
+                System.out.println("End date and time cannot be before starting date and time. Please try again.");
+                return false;
+            }
+            else if(editingAttempt.getReturnCode() == 0){
+                //success
+                System.out.println("Event edit successful.");
+                return true;
+            }
+            else{
+                System.out.println("Event failed to be edited. Please try again.");
+                return false;
+            }
 
-            //REVISIT WITH NEW ERROR
         }
 
         System.out.println("Would you like to edit the severity? (Yes/No)");
@@ -1499,6 +1512,7 @@ public class UserInterfaceController {
         //edit monitored event
         //if the found event is an monitored event, edit MonitoredEvent's unique attributes (adding a step)
         if(foundEvent instanceof MonitoredEvent){
+            Returns editStepAttempt = null;
             System.out.println("Would you like to add a step? (Yes/No)");
             editEventInput = inputReader.next();
             if(editEventInput.equalsIgnoreCase("Yes")){
@@ -1509,7 +1523,11 @@ public class UserInterfaceController {
 
                 //adds step to end of event
                 Step nextStep = new Step(stepName,((MonitoredEvent)foundEvent).getNumSteps() + 1 , false);
-                EventHandler.addStep((MonitoredEvent)foundEvent, nextStep);
+                editStepAttempt = EventHandler.addStep((MonitoredEvent)foundEvent, nextStep);
+
+                if(editStepAttempt.getReturnCode() == 0){
+                    System.out.println("Step added successfully.");
+                }
 
             }
             
@@ -1517,6 +1535,24 @@ public class UserInterfaceController {
             editEventInput = inputReader.next();
             if(editEventInput.equalsIgnoreCase("Yes")){
                 //edit the completion of steps
+                int stepTotal = ((MonitoredEvent)foundEvent).getNumSteps();
+
+                for(int i = 1; i<= stepTotal; i++){
+                    //mark each step complete
+                    System.out.println("Is step #" + i + " complete?");
+                    editEventInput = inputReader.next();
+                    if(editEventInput.equalsIgnoreCase("Yes")){
+                        editStepAttempt = EventHandler.setStepComplete(ProfileHandler.getCurrentProfile(), ((MonitoredEvent)foundEvent), i);
+
+                        if(editStepAttempt.getReturnCode() == 0){
+                            System.out.println("Step edit successful.");
+                        }
+                        if(editStepAttempt.getReturnCode() == -4){
+                            System.out.println("Step edit failed. Event doesn't exist.");
+                            return false;
+                        }
+                    }
+                }
             }
         }
 
