@@ -1232,6 +1232,26 @@ public class UserInterfaceController {
             }
         }
 
+        System.out.println("Would you like to edit the event type? (Yes/No) : ");
+        editEventInput = inputReader.next();
+        if(editEventInput.equalsIgnoreCase("Yes")){
+            //edit type
+            System.out.println("What is the type for the event? (Between 0 and 50 characters)");
+            editEventInput = inputReader.next();
+            editingAttempt = EventHandler.editEventType(ProfileHandler.getCurrentProfile(), foundEvent, editEventInput);
+
+            if(editingAttempt.getReturnCode() == -2){
+                //invalid event type
+                System.out.println("Invalid event type. Please try again.");
+                return false;
+            }
+            if (editingAttempt.getReturnCode() == -4){
+                //event doesn't exist
+                System.out.println("Event does not exist. Please try again.");
+            }
+        }
+
+
         System.out.println("Would you like to edit the start time? (Yes/No)");
         editEventInput = inputReader.next();
         if(editEventInput.equalsIgnoreCase("Yes")){
