@@ -215,7 +215,7 @@ public class EventHandler {
 
     public static Step generateNextStep(Profile p) {
         ArrayList<AbstractEvent> events = p.getEvents();
-        AbstractEvent curNextEvent = null;
+        AbstractEvent curNextEvent = new MonitoredEvent.MonitoredEventBuilder().endDateTime(LocalDateTime.MAX).build();
         AbstractEvent curEvent;
         for(int i = 0; i < events.size(); i++){
             curEvent = events.get(i);
@@ -225,7 +225,7 @@ public class EventHandler {
                 }
             }
         }
-        if (curNextEvent != null) {
+        if (curNextEvent.getEndDateTime() != LocalDateTime.MAX) {
             ArrayList<Step> steps = ((MonitoredEvent)curNextEvent).getSteps();
             return steps.get(0);
         }
