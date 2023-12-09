@@ -167,58 +167,90 @@ public class EventHandlerTest {
     
     @Test
     public void editEventTypeValidTest() {
+        String prevType = p.getEvents().get(0).getEventType();
         AbstractEvent e = p.getEvents().get(0);
         Returns result = EventHandler.editEventType(p, e, "TEST");
+        String curType = p.getEvents().get(0).getEventType();
+
         Assert.assertEquals(result.getReturnCode(), 0);
+        Assert.assertNotEquals(prevType, curType);
     }
 
     @Test
     public void editEventTypeInvalidEventTest() {
+        String prevType = p.getEvents().get(0).getEventType();
         AbstractEvent e = null;
         Returns result = EventHandler.editEventType(p, e, "TEST");
+        String curType = p.getEvents().get(0).getEventType();
+
         Assert.assertEquals(result.getReturnCode(), -4);
+        Assert.assertEquals(prevType, curType);
     }
 
     @Test
     public void editEventTypeInvalidTypeTest() {
+        String prevType = p.getEvents().get(0).getEventType();
         AbstractEvent e = p.getEvents().get(0);
         Returns result = EventHandler.editEventType(p, e, "");
+        String curType = p.getEvents().get(0).getEventType();
+
         Assert.assertEquals(result.getReturnCode(), -2);
+        Assert.assertEquals(prevType, curType);
     }
 
     @Test
     public void editEventSeverityValidTest() {
+        int prevSeverity = p.getEvents().get(0).getSeverityLevel();
         AbstractEvent e = p.getEvents().get(0);
         Returns result = EventHandler.editEventSeverity(p, e, 5);
+        int curSeverity = p.getEvents().get(0).getSeverityLevel();
+
         Assert.assertEquals(result.getReturnCode(), 0);
+        Assert.assertNotEquals(prevSeverity, curSeverity);
     }
 
     @Test
     public void editEventSeverityInvalidEventTest() {
+        int prevSeverity = p.getEvents().get(0).getSeverityLevel();
         AbstractEvent e = null;
         Returns result = EventHandler.editEventSeverity(p, e, 5);
+        int curSeverity = p.getEvents().get(0).getSeverityLevel();
+
         Assert.assertEquals(result.getReturnCode(), -4);
+        Assert.assertEquals(prevSeverity, curSeverity);
     }
 
     @Test
     public void editEventSeverityInvalidSeverityTest() {
+        int prevSeverity = p.getEvents().get(0).getSeverityLevel();
         AbstractEvent e = p.getEvents().get(0);
         Returns result = EventHandler.editEventSeverity(p, e, 10);
+        int curSeverity = p.getEvents().get(0).getSeverityLevel();
+
         Assert.assertEquals(result.getReturnCode(), -3);
+        Assert.assertEquals(prevSeverity, curSeverity);
     }
 
     @Test
     public void editEventFrequencyValidTest() {
+        AbstractEvent.Frequencies prevFrequency = p.getEvents().get(0).getFrequency();
         AbstractEvent e = p.getEvents().get(0);
-        Returns result = EventHandler.editEventFrequency(p, e, frequency);
+        Returns result = EventHandler.editEventFrequency(p, e, AbstractEvent.Frequencies.DAILY);
+        AbstractEvent.Frequencies curFrequency = p.getEvents().get(0).getFrequency();
+
         Assert.assertEquals(result.getReturnCode(), 0);
+        Assert.assertNotEquals(prevFrequency, curFrequency);
     }
 
     @Test
     public void editEventFrequencyInvalidEventTest() {
+        AbstractEvent.Frequencies prevFrequency = p.getEvents().get(0).getFrequency();
         AbstractEvent e = null;
-        Returns result = EventHandler.editEventFrequency(p, e, frequency);
+        Returns result = EventHandler.editEventFrequency(p, e, AbstractEvent.Frequencies.DAILY);
+        AbstractEvent.Frequencies curFrequency = p.getEvents().get(0).getFrequency();
+
         Assert.assertEquals(result.getReturnCode(), -4);
+        Assert.assertEquals(prevFrequency, curFrequency);
     }
 
     @Test
@@ -388,5 +420,31 @@ public class EventHandlerTest {
         EventHandler.removeEvent(p, p.getEvents().get(0));
         Returns result = EventHandler.checkCompletion(p);
         Assert.assertEquals(result.getReturnCode(), -5);
+    }
+
+    @Test
+    public void setStepCompleteValidTest() {
+        EventHandler.addMonitoredEvent(p, name, startDateTime, endDateTime, type, false, severity, frequency);
+        MonitoredEvent m = (MonitoredEvent) p.getEvents().get(1);
+        Step s = new Step("test", 1, false);
+        EventHandler.addStep(m, s);
+        Returns result = EventHandler.setStepComplete(p, m, 1);
+        Assert.assertEquals(result.getReturnCode(), 0);
+    }
+
+    @Test
+    public void setStepCompleteInvalidEventTest() {
+        Returns result = EventHandler.setStepComplete(p, null, 1);
+        Assert.assertEquals(result.getReturnCode(), -4);
+    }
+
+    @Test
+    public void setStepCompleteInvalidStepNumTest() {
+        EventHandler.addMonitoredEvent(p, name, startDateTime, endDateTime, type, false, severity, frequency);
+        MonitoredEvent m = (MonitoredEvent) p.getEvents().get(1);
+        Step s = new Step("test", 1, false);
+        EventHandler.addStep(m, s);
+        Returns result = EventHandler.setStepComplete(p, m, 2);
+        Assert.assertEquals(result.getReturnCode(), -4);
     }
 }
