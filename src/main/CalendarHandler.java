@@ -65,7 +65,7 @@ public class CalendarHandler {
                     
                     Recur<Temporal> recur = new Recur.Builder<>().frequency(Frequency.DAILY).build();
 
-                    VEvent recurringEvent = new VEvent(startDateTime, duration, e.getEventName());
+                    VEvent recurringEvent = new VEvent(startDateTime, endDateTime, e.getEventName());
 
                     recurringEvent.add(ug.generateUid());
                     recurringEvent.add(new RRule<>(recur));
