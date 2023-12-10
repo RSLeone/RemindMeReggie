@@ -228,6 +228,7 @@ public class UserInterfaceController {
 
             if(userChoice == 5){
                 //create profile backup
+                inputReader.nextLine();
                 createProfileBackup();
                 userChoice = 0;
             }
@@ -241,12 +242,14 @@ public class UserInterfaceController {
 
             if(userChoice == 7){
                 //import calendar from .ics file
+                inputReader.nextLine();
                 importCalander();
                 userChoice = 0;
             }
 
             if(userChoice == 8){
                 //export event list to .ics file
+                inputReader.nextLine();
                 exportListToCalander();
                 userChoice = 0;
             }
@@ -1151,7 +1154,7 @@ public class UserInterfaceController {
         String fileLocation = null;
         boolean success = false;
         while(true){
-            System.out.println("Please enter the exact file location for which you wish to save your backup. :");
+            System.out.println("Please enter the exact file director for which you wish to save your backup. :");
             fileLocation=inputReader.nextLine();
             success = ProfileBackupHandler.generateBackup(fileLocation, ProfileHandler.getCurrentProfile(), PersistenceFactory.persistenceType.JsonFile);
             if(!success){
@@ -1305,7 +1308,7 @@ public class UserInterfaceController {
         //searching by type
         if(searchInput == 2){
             String typeInput = null;
-
+            inputReader.nextLine();
             //repeat until successful entry
             while(true){
                 System.out.println("Please enter the event type you wish to search for. Input must be between 0 and 50 characters.");
