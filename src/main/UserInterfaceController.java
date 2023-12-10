@@ -127,10 +127,13 @@ public class UserInterfaceController {
 
             if(userChoice ==1){
                 //if user logs out
-                logOut();
+                boolean success = false;
+                success = logOut();
+                if(success){
+                    //breaks out of interaction loop to return to main menu
+                    break;
+                }
                 
-                //breaks out of interaction loop to return to main menu
-                break;
             }
 
             if(userChoice ==2){
@@ -247,7 +250,7 @@ public class UserInterfaceController {
                 //add monitored event, add respective steps
                 boolean success = false;
                 while(!success){
-                    success = addEvent();
+                    success = addEvent(true);
                 }
                 
 
@@ -261,7 +264,7 @@ public class UserInterfaceController {
                 //add regular event
                 boolean success = false;
                 while(!success){
-                    success = addEvent();
+                    success = addEvent(false);
                 }
                 
                 userChoice = 0;
@@ -421,6 +424,15 @@ public class UserInterfaceController {
 
     //private helper method for logging out
     private boolean logOut(){
+        //confirmation
+        String confirmation = null;
+        System.out.println("Are you sure you would like to logout? (Yes/No)");
+        confirmation = inputReader.next();
+        if(!confirmation.equalsIgnoreCase("yes")){
+            System.out.println("canceling operation");
+            return false;
+        }
+
         boolean success = false;
 
         success = ProfileHandler.logOut();
@@ -436,7 +448,7 @@ public class UserInterfaceController {
     }
 
     //private helper method for adding events. Parameter is true if monitored event, false if regular event
-    private boolean addEvent(){
+    private boolean addEvent(boolean MonitoredEventStatus){
         String eventNameInput = null;
         String eventTypeInput = null;
         int severityLevelInput = -1;
@@ -638,7 +650,12 @@ public class UserInterfaceController {
         }
 
         //create event
-        addMonitoredEventAttempt = EventHandler.addMonitoredEvent(ProfileHandler.getCurrentProfile(), eventNameInput, startDateTime, endDateTime, eventTypeInput, false, severityLevelInput, frequencyChoice);
+        if(MonitoredEventStatus){
+            addMonitoredEventAttempt = EventHandler.addMonitoredEvent(ProfileHandler.getCurrentProfile(), eventNameInput, startDateTime, endDateTime, eventTypeInput,false, severityLevelInput, frequencyChoice);
+        }
+        else{
+            addMonitoredEventAttempt = EventHandler.addEvent(ProfileHandler.getCurrentProfile(), eventNameInput, startDateTime, endDateTime, eventTypeInput,severityLevelInput, frequencyChoice);
+        }
         
         if(addMonitoredEventAttempt.getReturnCode() == 0){
             //success
@@ -1554,10 +1571,49 @@ public class UserInterfaceController {
                     }
                 }
             }
-        }
 
-        return true;
+            System.out.println("Would you like edit the names of steps?");
+            editEventInput = inputReader.next();
+            if(editEventInput.equalsIgnoreCase("Yes")){
+                Returns editStepName = null;
+                //edit step name
+                int stepTotal = ((MonitoredEvent)foundEvent).getNumSteps();
+                String newStepName = null;
+                for(int i = 1; i <= stepTotal; i++){
+                    System.out.println("What is the new name of step #" + i + "? (Must be between 0 and 50 characters)");
+                    newStepName = inputReader.next();
+
+                    editStepName = EventHandler.editStepName(((MonitoredEvent)foundEvent), i, newStepName);
+
+                    if(editStepName.getReturnCode() == -1){
+                        System.out.println("Invalid step name. Must be less than 50 characters. Please try again.");
+                        return false;
+                    }
+                    if(editStepName.getReturnCode() == -4){
+                        System.out.println("Event doesn't exist. Please try again.");
+                        return false;
+                    }
+                    if(editStepName.getReturnCode() == 0){
+                        System.out.println("Step edit successful.");
+                    }
+                }
+            }
+            
+
     }
+    //final confirmation
+        String finalConfirmation = null;
+        System.out.println("Are you finished with your edits? Type 'Done' to confirm");
+        finalConfirmation = inputReader.next();
+        if(finalConfirmation.equalsIgnoreCase("done")){
+            System.out.println("Edits made successfully.");
+            return true;
+        }
+        else{
+            System.out.println("Edits not confirmed, restarting....");
+            return false;
+        }
+}
 
     //private helper method for removing an event
     private boolean removeEvent(AbstractEvent event){
