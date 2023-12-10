@@ -447,4 +447,48 @@ public class EventHandlerTest {
         Returns result = EventHandler.setStepComplete(p, m, 2);
         Assert.assertEquals(result.getReturnCode(), -4);
     }
+
+    @Test
+    public void editStepNameValidTest() {
+        EventHandler.addMonitoredEvent(p, name, startDateTime, endDateTime, type, false, severity, frequency);
+        MonitoredEvent m = (MonitoredEvent) p.getEvents().get(1);
+        Step s = new Step("test", 1, false);
+        EventHandler.addStep(m, s);
+        Returns result = EventHandler.editStepName(m, 1, "test2");
+
+        Assert.assertEquals(result.getReturnCode(), 0);
+    }
+
+    @Test
+    public void editStepNameInvalidNameTest() {
+        EventHandler.addMonitoredEvent(p, name, startDateTime, endDateTime, type, false, severity, frequency);
+        MonitoredEvent m = (MonitoredEvent) p.getEvents().get(1);
+        Step s = new Step("test", 1, false);
+        EventHandler.addStep(m, s);
+        Returns result = EventHandler.editStepName(m, 1, "");
+
+        Assert.assertEquals(result.getReturnCode(), -1);
+    }
+
+    @Test
+    public void editStepNameInvalidStepNumberTest() {
+        EventHandler.addMonitoredEvent(p, name, startDateTime, endDateTime, type, false, severity, frequency);
+        MonitoredEvent m = (MonitoredEvent) p.getEvents().get(1);
+        Step s = new Step("test", 1, false);
+        EventHandler.addStep(m, s);
+        Returns result = EventHandler.editStepName(m, 0, "test");
+
+        Assert.assertEquals(result.getReturnCode(), -4);
+    }
+
+    @Test
+    public void editStepNameInvalidEventTest() {
+        EventHandler.addMonitoredEvent(p, name, startDateTime, endDateTime, type, false, severity, frequency);
+        MonitoredEvent m = (MonitoredEvent) p.getEvents().get(1);
+        Step s = new Step("test", 1, false);
+        EventHandler.addStep(m, s);
+        Returns result = EventHandler.editStepName(null, 1, "test");
+
+        Assert.assertEquals(result.getReturnCode(), -4);
+    }
 }
