@@ -355,8 +355,28 @@ public class EventHandlerTest {
 
     @Test
     public void generateNextStepValidTest() {
-        Step result = EventHandler.generateNextStep(p);
-        Assert.assertEquals(result, null);
+        EventHandler.addMonitoredEvent(p, name, startDateTime, endDateTime, type, false, severity, frequency);
+        MonitoredEvent m = (MonitoredEvent) p.getEvents().get(1);
+        Step s = new Step("test", 0, false);
+        EventHandler.addStep(m, s);
+        Pair<AbstractEvent, Step> result = EventHandler.generateNextStep(p);
+        Assert.assertEquals(result.getValue(), s);
+    }
+
+    @Test
+    public void generateNextStepAllStepsCompleteTest() {
+        EventHandler.addMonitoredEvent(p, name, startDateTime, endDateTime, type, false, severity, frequency);
+        MonitoredEvent m = (MonitoredEvent) p.getEvents().get(1);
+        Step s = new Step("test", 0, true);
+        EventHandler.addStep(m, s);
+        Pair<AbstractEvent, Step> result = EventHandler.generateNextStep(p);
+        Assert.assertEquals(result.getValue(), null);
+    }
+
+    @Test
+    public void generateNextStepNoEventsFoundTest() {
+        Pair<AbstractEvent, Step> result = EventHandler.generateNextStep(p);
+        Assert.assertEquals(result.getValue(), null);
     }
 
     @Test

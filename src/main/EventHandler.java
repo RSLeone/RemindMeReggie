@@ -212,7 +212,7 @@ public class EventHandler {
         return sortedList;
     }
 
-    public static Step generateNextStep(Profile p) {
+    public static Pair<AbstractEvent, Step> generateNextStep(Profile p) {
         ArrayList<AbstractEvent> events = p.getEvents();
         AbstractEvent curNextEvent = new MonitoredEvent.MonitoredEventBuilder().endDateTime(LocalDateTime.MAX).build();
         AbstractEvent curEvent;
@@ -228,12 +228,12 @@ public class EventHandler {
             ArrayList<Step> steps = ((MonitoredEvent)curNextEvent).getSteps();
             for (int i = 0; i < steps.size(); i++) {
                 if (steps.get(i).isComplete() == false) {
-                    return steps.get(i);
+                    return new Pair<AbstractEvent, Step> (curNextEvent, steps.get(i));
                 }
             }
-            return null;
+            return new Pair<AbstractEvent,Step>(curNextEvent, null);
         }
-        return null;
+        return new Pair<AbstractEvent,Step>(curNextEvent, null);
     }
     
     public static Returns displayEventSummary(ArrayList<AbstractEvent> eventsList) { //Display every event's attributes in eventsList
