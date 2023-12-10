@@ -327,6 +327,10 @@ public class EventHandler {
             return Returns.INVALID_EVENT_NAME;
         }
 
+        if (e == null) {
+            return Returns.EVENT_DOES_NOT_EXIST;
+        }
+
         ArrayList<Step> steps = e.getSteps();
         for(int i = 0; i < steps.size(); i++) {
             Step curStep = steps.get(i);
