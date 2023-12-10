@@ -59,62 +59,49 @@ public class CalendarHandler {
                 }
 
                 else if(e.getFrequency() == AbstractEvent.Frequencies.DAILY){
-                    
-                    LocalDateTime endTime = LocalDateTime.of(startDateTime.getYear(), startDateTime.getMonth(), startDateTime.getDayOfMonth(), endDateTime.getHour(), endDateTime.getMinute(), endDateTime.getSecond());
-                    Duration duration = Duration.between(startDateTime, endTime);
-                    
                     Recur<Temporal> recur = new Recur.Builder<>().frequency(Frequency.DAILY).build();
 
                     VEvent recurringEvent = new VEvent(startDateTime, endDateTime, e.getEventName());
 
                     recurringEvent.add(ug.generateUid());
                     recurringEvent.add(new RRule<>(recur));
-                    recurringEvent.add(new DtEnd<>(endTime));
+                    
 
                     calendar.add(recurringEvent);
                 }
 
                 else if(e.getFrequency() == AbstractEvent.Frequencies.WEEKLY){
-                    LocalDateTime endTime = LocalDateTime.of(startDateTime.getYear(), startDateTime.getMonth(), startDateTime.getDayOfMonth(), endDateTime.getHour(), endDateTime.getMinute(), endDateTime.getSecond());
-                    Duration duration = Duration.between(startDateTime, endTime);
-                    
                     Recur<Temporal> recur = new Recur.Builder<>().frequency(Frequency.WEEKLY).build();
 
-                    VEvent recurringEvent = new VEvent(startDateTime, duration, e.getEventName());
+                    VEvent recurringEvent = new VEvent(startDateTime, endDateTime, e.getEventName());
 
                     recurringEvent.add(ug.generateUid());
                     recurringEvent.add(new RRule<>(recur));
-                    recurringEvent.add(new DtEnd<>(endTime));
+                   
 
                     calendar.add(recurringEvent);
                 }
 
                 else if(e.getFrequency() == AbstractEvent.Frequencies.MONTHLY){
-                    LocalDateTime endTime = LocalDateTime.of(startDateTime.getYear(), startDateTime.getMonth(), startDateTime.getDayOfMonth(), endDateTime.getHour(), endDateTime.getMinute(), endDateTime.getSecond());
-                    Duration duration = Duration.between(startDateTime, endTime);
-                    
                     Recur<Temporal> recur = new Recur.Builder<>().frequency(Frequency.MONTHLY).build();
 
-                    VEvent recurringEvent = new VEvent(startDateTime, duration, e.getEventName());
+                    VEvent recurringEvent = new VEvent(startDateTime, endDateTime, e.getEventName());
 
                     recurringEvent.add(ug.generateUid());
                     recurringEvent.add(new RRule<>(recur));
-                    recurringEvent.add(new DtEnd<>(endTime));
+                    
 
                     calendar.add(recurringEvent);
                 }
 
                 else if(e.getFrequency() == AbstractEvent.Frequencies.YEARLY){
-                    LocalDateTime endTime = LocalDateTime.of(startDateTime.getYear(), startDateTime.getMonth(), startDateTime.getDayOfMonth(), endDateTime.getHour(), endDateTime.getMinute(), endDateTime.getSecond());
-                    Duration duration = Duration.between(startDateTime, endTime);
-                    
                     Recur<Temporal> recur = new Recur.Builder<>().frequency(Frequency.YEARLY).build();
 
-                    VEvent recurringEvent = new VEvent(startDateTime, duration, e.getEventName());
+                    VEvent recurringEvent = new VEvent(startDateTime, endDateTime, e.getEventName());
 
                     recurringEvent.add(ug.generateUid());
                     recurringEvent.add(new RRule<>(recur));
-                    recurringEvent.add(new DtEnd<>(endTime));
+                    
 
                     calendar.add(recurringEvent);
                 }
