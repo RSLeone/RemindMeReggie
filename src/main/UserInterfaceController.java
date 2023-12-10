@@ -215,11 +215,7 @@ public class UserInterfaceController {
 
             if(userChoice == 5){
                 //create profile backup
-                //repeats until successful operation
-                boolean success = false;
-                while(!success){
-                    success = createProfileBackup();
-                }
+                createProfileBackup();
                 userChoice = 0;
             }
 
@@ -245,11 +241,8 @@ public class UserInterfaceController {
             if(userChoice == 9){
                 //add monitored event, add respective steps
                 boolean success = false;
-                while(!success){
-                    success = addEvent(true);
-                }
+                success = addEvent(true);
                 
-
                 if(success)
                     addSteps();
 
@@ -258,10 +251,8 @@ public class UserInterfaceController {
 
             if(userChoice == 10){
                 //add regular event
-                boolean success = false;
-                while(!success){
-                    success = addEvent(false);
-                }
+                
+                addEvent(false);
                 
                 userChoice = 0;
             }
@@ -364,12 +355,34 @@ public class UserInterfaceController {
     //private method for creating profile
     private boolean createProfile(){
         Returns createProfileAttemptReturn;
+        String usernameInput = null;
+        String passwordInput = null;
 
         //Prompt for user input for username and password
-        System.out.print("Please enter your username: ");
-        String usernameInput = inputReader.nextLine();
-        System.out.print("Please enter a password of at least 8 characters: ");
-        String passwordInput = inputReader.nextLine();
+        //repeat until successful entry
+        while(true){
+            System.out.print("Please enter your username: ");
+            usernameInput = inputReader.nextLine();
+            if(usernameInput.length() <=0 || usernameInput == null){
+                //invalid username
+                System.out.println("Please ensure the username is not blank. Please try again.");
+            }
+            else{
+                break;
+            }
+        }
+        //repeat until successful entry
+        while(true){
+            System.out.print("Please enter your password: ");
+            passwordInput = inputReader.nextLine();
+            if(passwordInput.length() < 8 || passwordInput == null){
+                //invalid username
+                System.out.println("Please ensure the username is at least 8 characters. Please try again.");
+            }
+            else{
+                break;
+            }
+        }
 
         createProfileAttemptReturn =  ProfileHandler.createNewProfile(usernameInput, passwordInput);
         
@@ -412,9 +425,21 @@ public class UserInterfaceController {
     //helper method for restoring from backup
     private boolean restoreFromBackup(){
         boolean rfbsuccess = false;
-        //Prompt for user input for username and password
-        System.out.print("Please enter your username: ");
-        String usernameInput = inputReader.nextLine();
+        String usernameInput = null;
+        //Prompt for user input for username and file location
+        //repeat until successful entry
+        while(true){
+            System.out.print("Please enter your username: ");
+            usernameInput = inputReader.nextLine();
+            if(usernameInput.length() <=0 || usernameInput == null){
+                //invalid username
+                System.out.println("Please ensure the username is not blank. Please try again.");
+            }
+            else{
+                break;
+            }
+        }
+
         System.out.print("Please enter the exact file location of your backup: ");
         String locationInput = inputReader.nextLine();
 
@@ -437,7 +462,7 @@ public class UserInterfaceController {
         System.out.println("Are you sure you would like to logout? (Yes/No)");
         confirmation = inputReader.nextLine();
         if(!confirmation.equalsIgnoreCase("yes")){
-            System.out.println("canceling operation");
+            System.out.println("Canceling operation...");
             return false;
         }
 
@@ -983,12 +1008,16 @@ public class UserInterfaceController {
     //private helper method for generating next step to complete
     private boolean generateNextStep(){
         Step nextstep = null;
+        Pair<AbstractEvent, Step> nextPair = null;
+        AbstractEvent nextEvent = null;
 
-        nextstep = EventHandler.generateNextStep(ProfileHandler.getCurrentProfile());
+        nextPair = EventHandler.generateNextStep(ProfileHandler.getCurrentProfile());
+        nextEvent = nextPair.getKey();
+        nextstep= nextPair.getValue();
 
         //prints next step
         if(nextstep != null){
-            System.out.println("Next step is: " + nextstep.getStepName() + " and is number: " + nextstep.getStepNumber() + " of event");
+            System.out.println("Next step is: " + nextstep.getStepName() + " and is number: " + nextstep.getStepNumber() + " of event " + nextEvent.getEventName());
         }
         else  
             System.out.println("No available steps to do.");
