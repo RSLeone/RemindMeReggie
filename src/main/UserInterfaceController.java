@@ -889,7 +889,7 @@ public class UserInterfaceController {
         }
 
         //display yearly events
-        System.out.println("Non-recurring events: ");
+        System.out.println("Yearly events: ");
         sortedEventList = EventHandler.sortBySeverity(ProfileHandler.getCurrentProfile(), AbstractEvent.Frequencies.YEARLY);
         for (int i = 0; i < sortedEventList.size(); i++) {
             AbstractEvent event = sortedEventList.get(i);
