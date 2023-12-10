@@ -173,7 +173,7 @@ public class CalendarHandler {
                         }
                     }
                     
-                    Event e = (Event)(new EventBuilder()).eventName(event.getSummary().get().getValue()).startDateTime(startDateTime).endDateTime(endDateTime).frequency(frequency).build();
+                    Event e = (Event)(new EventBuilder()).eventName(event.getSummary().get().getValue()).startDateTime(startDateTime).endDateTime(endDateTime).frequency(frequency).eventType("Event").build();
                     returnVal.add(e);
                 }
             }
