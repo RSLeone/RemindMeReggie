@@ -208,7 +208,7 @@ public class EventHandler {
             }
         }
 
-        Comparator<AbstractEvent> comparator = (event1, event2) -> event1.getSeverityLevel() - event2.getSeverityLevel();
+        Comparator<AbstractEvent> comparator = (event1, event2) -> event2.getSeverityLevel() - event1.getSeverityLevel();
         sortedList.sort(comparator);
         return sortedList;
     }
@@ -321,4 +321,20 @@ public class EventHandler {
         
         return Returns.EVENT_DOES_NOT_EXIST;
     }
+
+    public static Returns editStepName(MonitoredEvent e, int stepNumber, String name) {
+        if (name.length() <= 0 || name.length() > 50) {
+            return Returns.INVALID_EVENT_NAME;
+        }
+
+        ArrayList<Step> steps = e.getSteps();
+        for(int i = 0; i < steps.size(); i++) {
+            Step curStep = steps.get(i);
+            if (curStep.getStepNumber() == stepNumber) {
+                curStep.setStepName(name);
+                return Returns.SUCCESS;
+            }
+        }
+        return Returns.EVENT_DOES_NOT_EXIST;
+    } 
 }
