@@ -1567,13 +1567,24 @@ public class UserInterfaceController {
             System.out.println("Would you like edit the names of steps?");
             editEventInput = inputReader.next();
             if(editEventInput.equalsIgnoreCase("Yes")){
+                Returns editStepName = null;
                 //edit step name
                 int stepTotal = ((MonitoredEvent)foundEvent).getNumSteps();
                 String newStepName = null;
                 for(int i = 1; i <= stepTotal; i++){
-                    System.out.println("What is the new name of step #" + i + "?");
+                    System.out.println("What is the new name of step #" + i + "? (Must be between 0 and 50 characters)");
                     newStepName = inputReader.next();
 
+                    editStepName = EventHandler.editStepName(((MonitoredEvent)foundEvent), i, newStepName);
+
+                    if(editStepName.getReturnCode() == -1){
+                        System.out.println("Invalid step name. Must be less than 50 characters. Please try again.");
+                        return false;
+                    }
+                    if(editStepName.getReturnCode() == -4){
+                        System.out.println("Event doesn't exist. Please try again.");
+                        return false;
+                    }
                 }
             }
     }
