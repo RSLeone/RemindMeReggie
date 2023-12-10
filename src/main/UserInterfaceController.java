@@ -127,10 +127,14 @@ public class UserInterfaceController {
 
             if(userChoice ==1){
                 //if user logs out
-                logOut();
+                boolean success = false;
+                success = logOut();
+                if(success){
+                    //breaks out of interaction loop to return to main menu
+                    System.out.println("Logging out process successfully");
+                    break;
+                }
                 
-                //breaks out of interaction loop to return to main menu
-                break;
             }
 
             if(userChoice ==2){
@@ -247,7 +251,7 @@ public class UserInterfaceController {
                 //add monitored event, add respective steps
                 boolean success = false;
                 while(!success){
-                    success = addEvent();
+                    success = addEvent(true);
                 }
                 
 
@@ -261,7 +265,7 @@ public class UserInterfaceController {
                 //add regular event
                 boolean success = false;
                 while(!success){
-                    success = addEvent();
+                    success = addEvent(false);
                 }
                 
                 userChoice = 0;
@@ -436,7 +440,7 @@ public class UserInterfaceController {
     }
 
     //private helper method for adding events. Parameter is true if monitored event, false if regular event
-    private boolean addEvent(){
+    private boolean addEvent(boolean MonitoredEventStatus){
         String eventNameInput = null;
         String eventTypeInput = null;
         int severityLevelInput = -1;
@@ -638,7 +642,12 @@ public class UserInterfaceController {
         }
 
         //create event
-        addMonitoredEventAttempt = EventHandler.addMonitoredEvent(ProfileHandler.getCurrentProfile(), eventNameInput, startDateTime, endDateTime, eventTypeInput, false, severityLevelInput, frequencyChoice);
+        if(MonitoredEventStatus){
+            addMonitoredEventAttempt = EventHandler.addMonitoredEvent(ProfileHandler.getCurrentProfile(), eventNameInput, startDateTime, endDateTime, eventTypeInput,false, severityLevelInput, frequencyChoice);
+        }
+        else{
+            addMonitoredEventAttempt = EventHandler.addEvent(ProfileHandler.getCurrentProfile(), eventNameInput, startDateTime, endDateTime, eventTypeInput,severityLevelInput, frequencyChoice);
+        }
         
         if(addMonitoredEventAttempt.getReturnCode() == 0){
             //success
@@ -1554,10 +1563,22 @@ public class UserInterfaceController {
                     }
                 }
             }
-        }
 
-        return true;
+            System.out.println("Would you like edit the names of steps?");
+            editEventInput = inputReader.next();
+            if(editEventInput.equalsIgnoreCase("Yes")){
+                //edit step name
+                int stepTotal = ((MonitoredEvent)foundEvent).getNumSteps();
+                String newStepName = null;
+                for(int i = 1; i <= stepTotal; i++){
+                    System.out.println("What is the new name of step #" + i + "?");
+                    newStepName = inputReader.next();
+
+                }
+            }
     }
+    return true;
+}
 
     //private helper method for removing an event
     private boolean removeEvent(AbstractEvent event){
