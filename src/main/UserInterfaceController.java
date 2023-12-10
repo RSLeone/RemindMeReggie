@@ -131,7 +131,6 @@ public class UserInterfaceController {
                 success = logOut();
                 if(success){
                     //breaks out of interaction loop to return to main menu
-                    System.out.println("Logging out process successfully");
                     break;
                 }
                 
@@ -425,6 +424,15 @@ public class UserInterfaceController {
 
     //private helper method for logging out
     private boolean logOut(){
+        //confirmation
+        String confirmation = null;
+        System.out.println("Are you sure you would like to logout? (Yes/No)");
+        confirmation = inputReader.next();
+        if(!confirmation.equalsIgnoreCase("yes")){
+            System.out.println("canceling operation");
+            return false;
+        }
+
         boolean success = false;
 
         success = ProfileHandler.logOut();
@@ -1585,10 +1593,26 @@ public class UserInterfaceController {
                         System.out.println("Event doesn't exist. Please try again.");
                         return false;
                     }
+                    if(editStepName.getReturnCode() == 0){
+                        System.out.println("Step edit successful.");
+                    }
                 }
             }
+            
+
     }
-    return true;
+    //final confirmation
+        String finalConfirmation = null;
+        System.out.println("Are you finished with your edits? Type 'Done' to confirm");
+        finalConfirmation = inputReader.next();
+        if(finalConfirmation.equalsIgnoreCase("done")){
+            System.out.println("Edits made successfully.");
+            return true;
+        }
+        else{
+            System.out.println("Edits not confirmed, restarting....");
+            return false;
+        }
 }
 
     //private helper method for removing an event
