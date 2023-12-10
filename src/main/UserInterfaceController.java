@@ -31,8 +31,8 @@ public class UserInterfaceController {
         
         //display possible options indefinitely until user quits
         while(true){
-           
-            System.out.println("Please enter the number corresponding to the action you wish to do.");
+            System.out.println();
+            System.out.println("Hello and welcome to RemindMeReggie! Please enter the number corresponding to the action you wish to do.");
             for(String choice: loginOptions ){
                 System.out.println(choice);
             }
@@ -55,6 +55,7 @@ public class UserInterfaceController {
             if(userChoice ==1){
                 boolean success = false;
                 //upon successful login, breaks loop, and returns to userInteraction
+                inputReader.nextLine();
                 success = loginToProfile();
                 userChoice = 0;
 
@@ -69,6 +70,7 @@ public class UserInterfaceController {
 
                 //will continously ask for credentials until successful creation
                 //upon successful creation, breaks loop, closes scanner, and returns to userInteraction
+                inputReader.nextLine();
                 createProfile();
                 userChoice = 0;
                 
@@ -82,17 +84,17 @@ public class UserInterfaceController {
 
             //if user restores from backup
             if (userChoice == 4){
+                inputReader.nextLine();
                 restoreFromBackup();
             }
 
             System.out.println();
-            inputReader.nextLine();
         }
 
     }
 
     private void displayUserOptions(){
-        int userChoice = 0;        
+        int userChoice = 0;
 
         //array of possible options for user
         String[] userOptions = new String[]{"1. Logout", "2. Edit Profile", "3. Display Summary",
@@ -101,14 +103,13 @@ public class UserInterfaceController {
                                             "10. Add Event", "11. Search for Event"};
 
         //display possible options indefinitely until user quits
+        
         while(true){
             System.out.println();
             System.out.println("Please enter the number corresponding to the action you wish to do.");
             for(String choice: userOptions ){
                 System.out.println(choice);
             }
-
-            inputReader.nextLine();
             //input validation. Checks if input is a number within the valid range.
             if(inputReader.hasNextInt()){
                 userChoice = inputReader.nextInt();
@@ -125,6 +126,7 @@ public class UserInterfaceController {
             if(userChoice ==1){
                 //if user logs out
                 boolean success = false;
+                inputReader.nextLine();
                 success = logOut();
                 if(success){
                     //breaks out of interaction loop to return to main menu
@@ -136,6 +138,7 @@ public class UserInterfaceController {
             if(userChoice ==2){
                 //if user edits profile
                 //prompt user to edit username, password, or delete profile
+                inputReader.nextLine();
                 String[] editProfileOptions = new String[]{"1. Edit username", "2. Edit Password", "3. Delete Profile"};
                 int editProfileInput = 0;
 
@@ -153,9 +156,11 @@ public class UserInterfaceController {
                         break;
                     }
                     else{
+                        inputReader.nextLine();
                         System.out.println("Please enter a number corresponding to an action. Do not enter a letter or symbol. Please try again.");
                     }
                     if(editProfileInput <0 || editProfileInput >3){
+                        inputReader.nextLine();
                         System.out.println("The number you entered does not correspond to an option. Please try again.");
                     }
                 }
@@ -175,10 +180,12 @@ public class UserInterfaceController {
                 }
                 if(editProfileInput ==1){
                     //edit username
+                    inputReader.nextLine();
                     editUsername();
                 }
                 if(editProfileInput == 2){
                     //editPassword
+                    inputReader.nextLine();
                     editPassword();
                 }
                     
@@ -188,28 +195,34 @@ public class UserInterfaceController {
             if(userChoice == 3){
                 //display summary
                 //no need to repeat since no input is required
-                EventHandler.checkCompletion(ProfileHandler.getCurrentProfile());
-                //Sort Events by severity is an extended use case, prompt for it if displaySumary was successful
-                    System.out.println("Would you like to sort the events by severity? (Yes/No): ");
-                    String sortEventInput = inputReader.nextLine();
-
-                if(sortEventInput.equalsIgnoreCase("Yes")){
-                    sortEventBySeverity();
+                inputReader.nextLine();
+                if(ProfileHandler.getCurrentProfile().getEvents().size() <=0){
+                    System.out.println("No events to display.");
                 }
                 else{
-                    displaySummary();
+                    EventHandler.checkCompletion(ProfileHandler.getCurrentProfile());
+                    //Sort Events by severity is an extended use case, prompt for it if displaySumary was successful
+                        System.out.println("Would you like to sort the events by severity? (Yes/No): ");
+                        String sortEventInput = inputReader.nextLine();
+
+                    if(sortEventInput.equalsIgnoreCase("Yes")){
+                        sortEventBySeverity();
+                    }
+                    else{
+                        displaySummary();
+                    }
                 }
-                
-                
-
-                
-                
             }
-
             if(userChoice == 4){
                 //view past events
-                EventHandler.checkCompletion(ProfileHandler.getCurrentProfile());
-                viewPastEvents();
+                if(ProfileHandler.getCurrentProfile().getEvents().size() <=0){
+                    System.out.println("No events to display.");
+                }
+                else{
+                    EventHandler.checkCompletion(ProfileHandler.getCurrentProfile());
+                    viewPastEvents();
+                }
+                
                 userChoice = 0;
             }
 
@@ -251,7 +264,6 @@ public class UserInterfaceController {
 
             if(userChoice == 10){
                 //add regular event
-                
                 addEvent(false);
                 
                 userChoice = 0;
@@ -259,26 +271,33 @@ public class UserInterfaceController {
 
             if(userChoice == 11){
                 //search for events. From here, the user can find an event and edit/remove it if they wish.
-                AbstractEvent foundEvent = null;
-                foundEvent = searchforEvent();
-
-                //if an event is found, ask to edit or delete
-                if(foundEvent != null){
-                    
-                    String editInput = null;
-                    //prompt user to edit/delete found event if they wish
-                    System.out.println("Would you like to edit the found event? (Yes/No)");
-                    editInput = inputReader.nextLine();
-
-                    if(editInput.equalsIgnoreCase("Yes")){
-                        //edit event
-                        editEvent(foundEvent);
-                        
-                    }
+                if(ProfileHandler.getCurrentProfile().getEvents().size() <=0){
+                    System.out.println("No events to display.");
                 }
                 else{
-                    System.out.println("The event could not be found.");
+                    AbstractEvent foundEvent = null;
+
+                    foundEvent = searchforEvent();
+
+                    //if an event is found, ask to edit or delete
+                    if(foundEvent != null){
+                        inputReader.nextLine();
+                        String editInput = null;
+                        //prompt user to edit/delete found event if they wish
+                        System.out.println("Would you like to edit the found event? (Yes/No)");
+                        editInput = inputReader.nextLine();
+
+                        if(editInput.equalsIgnoreCase("Yes")){
+                            //edit event
+                            editEvent(foundEvent);
+                            
+                        }
+                    }
+                    else{
+                        System.out.println("The event could not be found.");
+                    }
                 }
+                
                 userChoice = 0;
             }
         }
@@ -497,190 +516,289 @@ public class UserInterfaceController {
         AbstractEvent.Frequencies frequencyChoice = null;
 
         //prompt for user input and validate
-        System.out.print("Please enter the name for the event (Max 50 characters): ");
-        eventNameInput =  inputReader.nextLine();
         inputReader.nextLine();
-        System.out.print("Please enter the event type (Max 50 characters): ");
-        eventTypeInput = inputReader.nextLine();
-        inputReader.nextLine();
-        System.out.print("Please enter the numerical severity level of the event from 1 to 5: ");
-        if(!inputReader.hasNextInt()){
-            System.out.println("The severity level must be an integer from 1 to 5. Please try again.");
-            return false;
-        }
-        else{
-            severityLevelInput = inputReader.nextInt();
-        }
-        inputReader.nextLine();
+        //repeat until successful entry
+        while(true){
+            System.out.print("Please enter the name for the event (Max 50 characters): ");
+            eventNameInput =  inputReader.nextLine();
 
+            if(eventNameInput.length() <= 0 || eventNameInput.length() > 50 || eventNameInput == null){
+                System.out.println("Invalid event name. Please ensure the name is between 1 and 50 characters.");
+            }
+            else{
+                break;
+            }
+        }
 
-        System.out.print("Please enter the starting year as a positive number (ex:2023. Input must be a positive number): ");
+        System.out.println();
+        //repeat until successful entry
+        while(true){
+            System.out.print("Please enter the event type (Max 50 characters): ");
+            eventTypeInput = inputReader.nextLine();
+
+            if(eventTypeInput.length() <= 0 || eventTypeInput.length() > 50 || eventTypeInput == null){
+                System.out.println("Invalid event type. Please ensure the type is between 1 and 50 characters.");
+            }
+            else{
+                break;
+            }
+        }
+        System.out.println();
+        //repeat until successful entry
+        while(true){
+            System.out.print("Please enter the numerical severity level of the event from 1 to 5: ");
+            if(!inputReader.hasNextInt()){
+                System.out.println("The severity level must be an integer from 1 to 5. Please try again.");
+            }
+            else{
+                severityLevelInput = inputReader.nextInt();
+                if(severityLevelInput <=0 || severityLevelInput >5){
+                    System.out.println("The severity level must be an integer from 1 to 5. Please try again.");
+                }
+                else{
+                    break;
+                }
+            }
+        }
         
-        if(!inputReader.hasNextInt()){
-            System.out.println("Please ensure the year is an integer. Please try again.");
-            return false;
-        }
-        else{
-            yearInput = inputReader.nextInt();
-            if(yearInput <=0){
-                System.out.println("Please ensure the year is a positive integer. Please try again.");
-                return false;
-            }
-        }
-
+        
+        System.out.println();
         inputReader.nextLine();
-        System.out.print("Please enter the starting month as a positive number (ex:February is 2. Input must be between 1 and 12): ");
-        if(!inputReader.hasNextInt()){
-            System.out.println("Please ensure the month is a positive integer. Please try again.");
-            return false;
-        }
-        else{
-            monthInput = inputReader.nextInt();
-            if(monthInput <= 0 || monthInput > 12){
-                System.out.println("Please ensure the month is between 1 and 12. Please try again.");
-                return false;
+
+        //repeat until successful input
+        while(true){
+            System.out.print("Please enter the starting year as a positive number (ex:2023. Input must be a positive number): ");
+            
+            if(!inputReader.hasNextInt()){
+                System.out.println("Please ensure the year is an integer. Please try again.");
+            }
+            else{
+                yearInput = inputReader.nextInt();
+                if(yearInput <=0){
+                    System.out.println("Please ensure the year is a positive integer. Please try again.");
+                }
+                else{
+                    break;
+                }
             }
         }
-
+        System.out.println();
         inputReader.nextLine();
-        System.out.print("Please enter the starting day as a positive number (ex:22. Input must be between 1 and 31): ");
-        if(!inputReader.hasNextInt()){
-            System.out.println("Please ensure the day is an integer. Please try again.");
-            return false;
-        }
-        else{
-            dayInput = inputReader.nextInt();
-            if(dayInput <= 0 || dayInput > 31){
-                System.out.println("Please ensure the day is a positive integer between 1 and 31. Please try again.");
-                return false;
-            }
 
-            //compensate for different months having different days
-            if((monthInput == 2 && dayInput >28) || (monthInput == 4 && dayInput >30) || (monthInput == 6 && dayInput>30) || (monthInput == 9 && dayInput > 30) || (monthInput == 11 && dayInput > 30)){
-                System.out.println("Please ensure the day is a valid one for the given month you entered.");
-                return false;
+        //repeat until successful entry
+        while(true){
+            System.out.print("Please enter the starting month as a positive number (ex:February is 2. Input must be between 1 and 12): ");
+            if(!inputReader.hasNextInt()){
+                System.out.println("Please ensure the month is a positive integer. Please try again.");
+            }
+            else{
+                monthInput = inputReader.nextInt();
+                if(monthInput <= 0 || monthInput > 12){
+                    System.out.println("Please ensure the month is between 1 and 12. Please try again.");
+                }
+                else{
+                    break;
+                }
             }
         }
-
+        
+        //repeat until successful entry
+        System.out.println();
         inputReader.nextLine();
-        System.out.print("Please enter the starting hour for the event as a number in the 24-hour clock. (ex: 2pm is 14. Input must be between 0 and 23) : ");
-        if(!inputReader.hasNextInt()){
-            System.out.println("Please ensure the hour is an integer. Please try again.");
-            return false;
+
+        while(true){
+            System.out.print("Please enter the starting day as a positive number (ex:22. Input must be between 1 and 31): ");
+            if(!inputReader.hasNextInt()){
+                System.out.println("Please ensure the day is an integer. Please try again.");
+            }
+            else{
+                dayInput = inputReader.nextInt();
+                if(dayInput <= 0 || dayInput > 31){
+                    System.out.println("Please ensure the day is a positive integer between 1 and 31. Please try again.");
+                }
+                //compensate for different months having different days
+                else if((monthInput == 2 && dayInput >28) || (monthInput == 4 && dayInput >30) || (monthInput == 6 && dayInput>30) || (monthInput == 9 && dayInput > 30) || (monthInput == 11 && dayInput > 30)){
+                    System.out.println("Please ensure the day is a valid one for the given month you entered.");
+                }
+                else{
+                    break;
+                }
+            }
         }
-        else{
-            hourInput = inputReader.nextInt();
-            if(hourInput <0 || hourInput >=24){
-                System.out.println("Please ensure the hour is an integer between 0 and 23. Please try again.");
-                return false;
+        System.out.println();
+        inputReader.nextLine();
+
+        //repeat until successful entry
+        while(true){
+            System.out.print("Please enter the starting hour for the event as a number in the 24-hour clock. (ex: 2pm is 14. Input must be between 0 and 23) : ");
+            if(!inputReader.hasNextInt()){
+                System.out.println("Please ensure the hour is an integer. Please try again.");
+            }
+            else{
+                hourInput = inputReader.nextInt();
+                if(hourInput <0 || hourInput >=24){
+                    System.out.println("Please ensure the hour is an integer between 0 and 23. Please try again.");
+                }
+                else{
+                    break;
+                }
             }
         }
 
+        System.out.println();
         inputReader.nextLine();
-        System.out.print("Please enter the starting minute of the event as an integer. Input must be between 0 and 59 : ");
-        if(!inputReader.hasNextInt()){
-            System.out.println("Please ensure the minute is an integer. Please try again.");
-            return false;
-        }
-        else{
-            minuteInput = inputReader.nextInt();
-            if(hourInput <0 || hourInput >=60){
-                System.out.println("Please ensure the minute is an integer between 0 and 59. Please try again.");
-                return false;
+
+        //repeat until succesful entry
+        while(true){
+            System.out.print("Please enter the starting minute of the event as an integer. Input must be between 0 and 59 : ");
+            if(!inputReader.hasNextInt()){
+                System.out.println("Please ensure the minute is an integer. Please try again.");
+            }
+            else{
+                minuteInput = inputReader.nextInt();
+                if(hourInput <0 || hourInput >=60){
+                    System.out.println("Please ensure the minute is an integer between 0 and 59. Please try again.");
+                }
+                else{
+                    break;
+                }
             }
         }
+        
 
         startDateTime = LocalDateTime.of(yearInput,monthInput,dayInput,hourInput,minuteInput);
 
-        System.out.print("Please enter the ending year as a positive number (ex:2023. Input must be a positive number): ");
-        if(!inputReader.hasNextInt()){
-            System.out.println("Please ensure the year is an integer. Please try again.");
-            return false;
-        }
-        else{
-            yearInput = inputReader.nextInt();
-            if(yearInput <=0){
-                System.out.println("Please ensure the year is a positive integer. Please try again.");
-                return false;
+        //repeat until successful entry
+        System.out.println();
+        while(true){
+            System.out.print("Please enter the ending year as a positive number (ex:2023. Input must be a positive number): ");
+            if(!inputReader.hasNextInt()){
+                System.out.println("Please ensure the year is an integer. Please try again.");
             }
+            else{
+                yearInput = inputReader.nextInt();
+                if(yearInput <=0){
+                    System.out.println("Please ensure the year is a positive integer. Please try again.");
+                }{
+                    break;
+                }
         }
-
+        }
+        
         inputReader.nextLine();
-        System.out.print("Please enter the ending month as a positive number (ex:February is 2. Input must be between 1 and 12): ");
-        if(!inputReader.hasNextInt()){
-            System.out.println("Please ensure the month is a positive integer. Please try again.");
-            return false;
-        }
-        else{
-            monthInput = inputReader.nextInt();
-            if(monthInput <= 0 || monthInput > 12){
-                System.out.println("Please ensure the month is between 1 and 12. Please try again.");
-                return false;
-            }
-        }
-        System.out.print("Please enter the ending day as a positive number (ex:22. Input must be between 1 and 31): ");
-        if(!inputReader.hasNextInt()){
-            System.out.println("Please ensure the day is an integer. Please try again.");
-            return false;
-        }
-        else{
-            dayInput = inputReader.nextInt();
-            if(dayInput <= 0 || dayInput > 31){
-                System.out.println("Please ensure the day is a positive integer between 1 and 31. Please try again.");
-                return false;
-            }
 
-            //compensate for different months having different days
-            if((monthInput == 2 && dayInput >28) || (monthInput == 4 && dayInput >30) || (monthInput == 6 && dayInput>30) || (monthInput == 9 && dayInput > 30) || (monthInput == 11 && dayInput > 30)){
-                System.out.println("Please ensure the day is a valid one for the given month you entered.");
-                return false;
+        //repeat until succesful entry
+        System.out.println();
+        while(true){
+            System.out.print("Please enter the ending month as a positive number (ex:February is 2. Input must be between 1 and 12): ");
+            if(!inputReader.hasNextInt()){
+                System.out.println("Please ensure the month is a positive integer. Please try again.");
+            }
+            else{
+                monthInput = inputReader.nextInt();
+                if(monthInput <= 0 || monthInput > 12){
+                    System.out.println("Please ensure the month is between 1 and 12. Please try again.");
+                }
+                else{
+                    break;
+                }
             }
         }
 
-        System.out.print("Please enter the ending hour for the event as a number in the 24-hour clock. (ex: 2pm is 14. Input must be between 0 and 23) : ");
-        if(!inputReader.hasNextInt()){
-            System.out.println("Please ensure the hour is an integer. Please try again.");
-            return false;
-        }
-        else{
-            hourInput = inputReader.nextInt();
-            if(hourInput <0 || hourInput >=24){
-                System.out.println("Please ensure the hour is an integer between 0 and 23. Please try again.");
-                return false;
+        System.out.println();
+        //repeat until successful entry
+        while(true){
+            System.out.print("Please enter the ending day as a positive number (ex:22. Input must be between 1 and 31): ");
+            if(!inputReader.hasNextInt()){
+                System.out.println("Please ensure the day is an integer. Please try again.");
+            }
+            else{
+                dayInput = inputReader.nextInt();
+                if(dayInput <= 0 || dayInput > 31){
+                    System.out.println("Please ensure the day is a positive integer between 1 and 31. Please try again.");
+                }
+                //compensate for different months having different days
+                else if((monthInput == 2 && dayInput >28) || (monthInput == 4 && dayInput >30) || (monthInput == 6 && dayInput>30) || (monthInput == 9 && dayInput > 30) || (monthInput == 11 && dayInput > 30)){
+                    System.out.println("Please ensure the day is a valid one for the given month you entered.");
+                }
+                else{
+                    break;
+                }
             }
         }
-        System.out.print("Please enter the ending minute of the event as an integer. Input must between 0 and 59 : ");
-        if(!inputReader.hasNextInt()){
-            System.out.println("Please ensure the minute is an integer. Please try again.");
-            return false;
-        }
-        else{
-            minuteInput = inputReader.nextInt();
-            if(hourInput <0 || hourInput >=60){
-                System.out.println("Please ensure the minute is an integer between 0 and 59. Please try again.");
-                return false;
+        
+        //repeat until successful entry
+        System.out.println();
+
+        while(true){
+            System.out.print("Please enter the ending hour for the event as a number in the 24-hour clock. (ex: 2pm is 14. Input must be between 0 and 23) : ");
+            if(!inputReader.hasNextInt()){
+                System.out.println("Please ensure the hour is an integer. Please try again.");
+            }
+            else{
+                hourInput = inputReader.nextInt();
+                if(hourInput <0 || hourInput >=24){
+                    System.out.println("Please ensure the hour is an integer between 0 and 23. Please try again.");
+                }
+                else{
+                    break;
+                }
             }
         }
+
+        System.out.println();
+        //repeat until successful entry
+        while(true){
+            System.out.print("Please enter the ending minute of the event as an integer. Input must between 0 and 59 : ");
+            if(!inputReader.hasNextInt()){
+                System.out.println("Please ensure the minute is an integer. Please try again.");
+            }
+            else{
+                minuteInput = inputReader.nextInt();
+                if(hourInput <0 || hourInput >=60){
+                    System.out.println("Please ensure the minute is an integer between 0 and 59. Please try again.");
+                }
+                else{
+                    break;
+                }
+            }
+        }
+        
 
         endDateTime = LocalDateTime.of(yearInput,monthInput,dayInput,hourInput,minuteInput);
+        System.out.println();
+        inputReader.nextLine();
 
-        System.out.print("What is the frequency of this event? (Not-Recurring, Daily,Weekly,Monthly, or Yearly) : ");
-        frequencyInput = inputReader.nextLine();
+        //repeat until successful entry
+        while(true){
+            System.out.print("What is the frequency of this event? (Not-Recurring, Daily,Weekly,Monthly, or Yearly) : ");
+            frequencyInput = inputReader.nextLine();
 
-        if(frequencyInput.equalsIgnoreCase("Not-Recurring") || frequencyInput.equalsIgnoreCase("not recurring"))
-            frequencyChoice = AbstractEvent.Frequencies.NOT_RECURRING;
-        else if(frequencyInput.equalsIgnoreCase("Daily"))
-            frequencyChoice = AbstractEvent.Frequencies.DAILY;
-        else if(frequencyInput.equalsIgnoreCase("Weekly"))
-            frequencyChoice = AbstractEvent.Frequencies.WEEKLY;
-        else if(frequencyInput.equalsIgnoreCase("Monthly"))
-            frequencyChoice = AbstractEvent.Frequencies.MONTHLY;
-        else if(frequencyInput.equalsIgnoreCase("Yearly"))
-            frequencyChoice = AbstractEvent.Frequencies.YEARLY;
-        else{
-            System.out.println("Invalid frequency entered. Please try again.");
-            return false;
+            if(frequencyInput.equalsIgnoreCase("Not-Recurring") || frequencyInput.equalsIgnoreCase("not recurring")){
+                frequencyChoice = AbstractEvent.Frequencies.NOT_RECURRING;
+                break;
+            }
+            else if(frequencyInput.equalsIgnoreCase("Daily")){
+                frequencyChoice = AbstractEvent.Frequencies.DAILY;
+                break;
+            }
+            else if(frequencyInput.equalsIgnoreCase("Weekly")){
+                frequencyChoice = AbstractEvent.Frequencies.WEEKLY;
+                break;
+            }
+            else if(frequencyInput.equalsIgnoreCase("Monthly")){
+                frequencyChoice = AbstractEvent.Frequencies.MONTHLY;
+                break;
+            }
+            else if(frequencyInput.equalsIgnoreCase("Yearly")){
+                frequencyChoice = AbstractEvent.Frequencies.YEARLY;
+                break;
+            }
+            else{
+                System.out.println("Invalid frequency entered. Please try again.");
+            }
         }
+        
 
         //create event
         if(MonitoredEventStatus){
@@ -725,40 +843,45 @@ public class UserInterfaceController {
             int numSteps = 0;
             String editEventInput = null;
             int listSize = 0;
+            System.out.println();
             System.out.println("How many steps are there in this event? Please enter a positive number.");
-            if(inputReader.hasNextInt()){
-                numSteps = inputReader.nextInt();
+            //repeat until successful entry
+            while(true){
+                if(inputReader.hasNextInt()){
+                    numSteps = inputReader.nextInt();
 
-                if(numSteps <= 0){
-                    System.out.println("Do not enter a nonpositive number. Please try again.");
-                    return false;
+                    if(numSteps <= 0){
+                        System.out.println("Do not enter a nonpositive number. Please try again.");
+                    }
+                    else{
+                        Step stepToAdd = null;
+                        String stepName = null;
+                        inputReader.nextLine();
+                        //create as many steps as the user specified
+                        for(int i = 1; i<=numSteps; i++){
+                            System.out.println();
+                            
+                            listSize = ProfileHandler.getCurrentProfile().getEvents().size();
+                            
+                            System.out.println("What is Step #" + i + "'s title?");
+                            editEventInput = inputReader.nextLine();
+                            stepName = editEventInput;
+                            stepToAdd = new Step(stepName, i, false);
+                            
+                            //grab monitoredevent to edit
+                            MonitoredEvent m = (MonitoredEvent)(ProfileHandler.getCurrentProfile().getEvents().get(listSize-1));
+                            EventHandler.addStep(m, stepToAdd);
+                        }
+
+                        System.out.println("Monitored event steps created successfully");
+                        return true;
+                    }
                 }
                 else{
-                    Step stepToAdd = null;
-                    String stepName = null;
-
-                    //create as many steps as the user specified
-                    for(int i = 1; i<=numSteps; i++){
-                        listSize = ProfileHandler.getCurrentProfile().getEvents().size();
-
-                        System.out.println("What is Step #" + i + "'s title?");
-                        editEventInput = inputReader.nextLine();
-                        stepName = editEventInput;
-                        stepToAdd = new Step(stepName, i, false);
-                        
-                        //grab monitoredevent to edit
-                        MonitoredEvent m = (MonitoredEvent)(ProfileHandler.getCurrentProfile().getEvents().get(listSize-1));
-                        EventHandler.addStep(m, stepToAdd);
-                    }
-
-                    System.out.println("Monitored event steps created successfully");
-                    return true;
+                    System.out.println("Do not enter a letter or number. Please try again.");
                 }
             }
-            else{
-                System.out.println("Do not enter a letter or number. Please try again.");
-                return false;
-            }
+            
        
     }
 
@@ -895,6 +1018,13 @@ public class UserInterfaceController {
             System.out.println("Type: " + event.getEventType());
             System.out.println("Severity: " + event.getSeverityLevel());
             System.out.println("Frequency: " + event.getFrequency());
+            if(event instanceof MonitoredEvent) {
+                ArrayList<Step> stepList = ((MonitoredEvent)event).getSteps();
+                for (int j = 0; j < stepList.size(); j++) {
+                    Step step = stepList.get(j);
+                    System.out.println("Step " + (j + 1) + ": " + step.getStepName());
+                }
+            }
             System.out.println();
         }
 
@@ -908,6 +1038,13 @@ public class UserInterfaceController {
             System.out.println("Type: " + event.getEventType());
             System.out.println("Severity: " + event.getSeverityLevel());
             System.out.println("Frequency: " + event.getFrequency());
+            if(event instanceof MonitoredEvent) {
+                ArrayList<Step> stepList = ((MonitoredEvent)event).getSteps();
+                for (int j = 0; j < stepList.size(); j++) {
+                    Step step = stepList.get(j);
+                    System.out.println("Step " + (j + 1) + ": " + step.getStepName());
+                }
+            }
             System.out.println();
         }
 
@@ -921,6 +1058,13 @@ public class UserInterfaceController {
             System.out.println("Type: " + event.getEventType());
             System.out.println("Severity: " + event.getSeverityLevel());
             System.out.println("Frequency: " + event.getFrequency());
+            if(event instanceof MonitoredEvent) {
+                ArrayList<Step> stepList = ((MonitoredEvent)event).getSteps();
+                for (int j = 0; j < stepList.size(); j++) {
+                    Step step = stepList.get(j);
+                    System.out.println("Step " + (j + 1) + ": " + step.getStepName());
+                }
+            }
             System.out.println();
         }
 
@@ -934,6 +1078,13 @@ public class UserInterfaceController {
             System.out.println("Type: " + event.getEventType());
             System.out.println("Severity: " + event.getSeverityLevel());
             System.out.println("Frequency: " + event.getFrequency());
+            if(event instanceof MonitoredEvent) {
+                ArrayList<Step> stepList = ((MonitoredEvent)event).getSteps();
+                for (int j = 0; j < stepList.size(); j++) {
+                    Step step = stepList.get(j);
+                    System.out.println("Step " + (j + 1) + ": " + step.getStepName());
+                }
+            }
             System.out.println();
         }
 
@@ -947,6 +1098,13 @@ public class UserInterfaceController {
             System.out.println("Type: " + event.getEventType());
             System.out.println("Severity: " + event.getSeverityLevel());
             System.out.println("Frequency: " + event.getFrequency());
+            if(event instanceof MonitoredEvent) {
+                ArrayList<Step> stepList = ((MonitoredEvent)event).getSteps();
+                for (int j = 0; j < stepList.size(); j++) {
+                    Step step = stepList.get(j);
+                    System.out.println("Step " + (j + 1) + ": " + step.getStepName());
+                }
+            }
             System.out.println();
         }
 
@@ -994,7 +1152,7 @@ public class UserInterfaceController {
         boolean success = false;
         while(true){
             System.out.println("Please enter the exact file location for which you wish to save your backup. :");
-            
+            fileLocation=inputReader.nextLine();
             success = ProfileBackupHandler.generateBackup(fileLocation, ProfileHandler.getCurrentProfile(), PersistenceFactory.persistenceType.JsonFile);
             if(!success){
                 System.out.println("Unable to generate backup. Please try again.");
@@ -1017,7 +1175,7 @@ public class UserInterfaceController {
 
         //prints next step
         if(nextstep != null){
-            System.out.println("Next step is: " + nextstep.getStepName() + " and is number: " + nextstep.getStepNumber() + " of event " + nextEvent.getEventName());
+            System.out.println("Next step is: '" + nextstep.getStepName() + "'' and is number: " + nextstep.getStepNumber() + " of event '" + nextEvent.getEventName()+"'.");
         }
         else  
             System.out.println("No available steps to do.");
@@ -1081,6 +1239,7 @@ public class UserInterfaceController {
         int searchInput = 0;
 
         System.out.println();
+        inputReader.nextLine();
         System.out.println("Please enter the number corresponding to the action you wish to do.");
         for(String choice: searchEventOptions ){
             System.out.println(choice);
@@ -1127,6 +1286,7 @@ public class UserInterfaceController {
         if(searchInput == 1){
             String nameInput = null;
             //repeat until successful entry
+            inputReader.nextLine();
             while(true){
                 System.out.println("Please enter the event name you wish to search for. Input must be between 0 and 50 characters.");
                 nameInput = inputReader.nextLine();
@@ -1138,6 +1298,8 @@ public class UserInterfaceController {
                     break;
                 }
             }
+            returnPair = EventHandler.searchForEventName(ProfileHandler.getCurrentProfile(), nameInput);
+            returnAttempt = returnPair.getValue();
         }
 
         //searching by type
@@ -1166,16 +1328,17 @@ public class UserInterfaceController {
         //check to see if returned event was valid
         if(returnAttempt.getReturnCode() == 0){
             //success
-            System.out.println("Event successfully found.");
+            System.out.println("Events successfully found.");
             foundList = returnPair.getKey();
 
             //loop through list and have user select the event they want.
             int eventChoice = 0;
             //loops until successful input
+            System.out.println();
             while(true){
                 System.out.println("Enter the number corresponding to the event you wish to edit.");
-                for(int i = 1; i<= foundList.size(); i++){
-                    System.out.println(i + ". Name:" + foundList.get(i).getEventName() + ", Type:" + foundList.get(i).getEventType());
+                for(int i = 0; i< foundList.size(); i++){
+                    System.out.println((i+1) + ". Name:" + foundList.get(i).getEventName() + ", Type:" + foundList.get(i).getEventType() + ", " + foundList.get(i).getStartDateTime() + " - " + foundList.get(i).getEndDateTime());
                 }
                 if(inputReader.hasNextInt()){
                     eventChoice = inputReader.nextInt();
@@ -1183,8 +1346,8 @@ public class UserInterfaceController {
                         System.out.println("Please enter a number within the given range. Please try again.");
                     }
                     else{
-                        System.out.println("Editing Event #" + eventChoice + ": " + foundList.get(eventChoice).getEventName());
-                        return foundList.get(eventChoice);
+                        System.out.println("Editing Event #" + eventChoice + ": " + foundList.get((eventChoice-1)).getEventName());
+                        return foundList.get((eventChoice-1));
                     }
                 }
                 else{
@@ -1223,13 +1386,13 @@ public class UserInterfaceController {
         String[] userOptions = new String[]{"1. Name", "2. Type", "3. Start Time", "4. End Time", "5. Severity", "6. Frequency", "7. Number of Steps", "8. Step Name", "9. Step Completion", "10. Delete Event", "0. Done"};
         while(true){
             //give user a list of different options to edit in a loop
-            System.out.println();
+            //System.out.println();
             System.out.println("Please enter the number corresponding to the action you wish to do.");
             for(String choice: userOptions ){
                 System.out.println(choice);
             }
 
-            inputReader.nextLine();
+            //inputReader.nextLine();
             //input validation. Checks if input is a number within the valid range.
             if(inputReader.hasNextInt()){
                 userChoice = inputReader.nextInt();
@@ -1245,6 +1408,7 @@ public class UserInterfaceController {
             if(userChoice == 0){
                         //final confirmation
                 String finalConfirmation = null;
+                inputReader.nextLine();
                 System.out.println("Are you finished with your edits? Type 'Done' to confirm");
                 finalConfirmation = inputReader.nextLine();
                 if(finalConfirmation.equalsIgnoreCase("done")){
@@ -1260,6 +1424,8 @@ public class UserInterfaceController {
 
             if(userChoice == 1){
                 //editname
+                inputReader.nextLine();
+                
                 System.out.println("What is the name for the event? (Between 0 and 50 characters)");
                 editEventInput = inputReader.nextLine();
                 editingAttempt = EventHandler.editEventName(ProfileHandler.getCurrentProfile(), foundEvent, editEventInput);
@@ -1283,7 +1449,8 @@ public class UserInterfaceController {
 
             if(userChoice == 2){
                 //edit type
-                System.out.println("What is the type for the event? (Between 0 and 50 characters)");
+                inputReader.nextLine();
+                System.out.println("What is the type for the event? (Between 1 and 50 characters)");
                 editEventInput = inputReader.nextLine();
                 editingAttempt = EventHandler.editEventType(ProfileHandler.getCurrentProfile(), foundEvent, editEventInput);
 
@@ -1294,7 +1461,6 @@ public class UserInterfaceController {
                 else if(editingAttempt.getReturnCode() == -2){
                     //invalid event type
                     System.out.println("Invalid event type. Please try again.");
-                    return false;
                 }
                 else if (editingAttempt.getReturnCode() == -4){
                     //event doesn't exist
@@ -1583,6 +1749,7 @@ public class UserInterfaceController {
 
             if(userChoice == 6){
                 //edit frequency
+                inputReader.nextLine();
                 AbstractEvent.Frequencies frequencyChoice = null;
 
                 //repeats until successful input
