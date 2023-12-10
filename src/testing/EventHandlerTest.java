@@ -306,51 +306,38 @@ public class EventHandlerTest {
     }
 
     @Test
-    public void searchForEventSeverityValidTest() {
-        Pair<AbstractEvent, Returns> result = EventHandler.searchForEventSeverity(p, severity);
+    public void searchForEventNameValidTest() {
+        Pair<ArrayList<AbstractEvent>, Returns> result = EventHandler.searchForEventName(p, name);
         Assert.assertEquals(result.getValue().getReturnCode(), 0);
     }
 
     @Test
-    public void searchForEventSeverityInvalidSeverityTest() {
-        Pair<AbstractEvent, Returns> result = EventHandler.searchForEventSeverity(p, -1);
-        Assert.assertEquals(result.getValue().getReturnCode(), -3);
+    public void searchForEventNameInvalidNameTest() {
+        Pair<ArrayList<AbstractEvent>, Returns> result = EventHandler.searchForEventName(p, "");
+        Assert.assertEquals(result.getValue().getReturnCode(), -1);
     }
 
     @Test
-    public void searchForEventSeverityNoEventFoundTest() {
-        Pair<AbstractEvent, Returns> result = EventHandler.searchForEventSeverity(p, 5);
-        Assert.assertEquals( result.getValue().getReturnCode(), -4);
-    }
-    
-    @Test
-    public void searchForEventDateTimeEventFoundTest() {
-        Pair<AbstractEvent, Returns> result = EventHandler.searchForEventDateTime(p, startDateTime);
-        Assert.assertEquals((AbstractEvent) result.getKey(), p.getEvents().get(0));
-    }
-
-    @Test
-    public void searchForEventDateTimeEventNotFoundTest() {
-        Pair<AbstractEvent, Returns> result = EventHandler.searchForEventDateTime(p, LocalDateTime.now().plusMinutes(100));
-        Assert.assertEquals(result.getKey(), null);
+    public void searchForEventNameNoEventFoundTest() {
+        Pair<ArrayList<AbstractEvent>, Returns> result = EventHandler.searchForEventName(p, "test2");
         Assert.assertEquals(result.getValue().getReturnCode(), -4);
     }
 
     @Test
     public void searchForEventTypeValidTest() {
-        Pair<AbstractEvent, Returns> result = EventHandler.searchForEventType(p, type);
+        Pair<ArrayList<AbstractEvent>, Returns> result = EventHandler.searchForEventType(p, type);
         Assert.assertEquals (result.getValue().getReturnCode(), 0);
     }
 
     @Test
     public void searchForEventTypeInvalidTypeTest() {
-        Pair<AbstractEvent, Returns> result = EventHandler.searchForEventType(p, "");
+        Pair<ArrayList<AbstractEvent>, Returns> result = EventHandler.searchForEventType(p, "");
         Assert.assertEquals(result.getValue().getReturnCode(), -2);
     }
 
     @Test
     public void searchForEventTypeNoEventFoundTest() {
-        Pair<AbstractEvent, Returns> result = EventHandler.searchForEventType(p, "test2");
+        Pair<ArrayList<AbstractEvent>, Returns> result = EventHandler.searchForEventType(p, "test2");
         Assert.assertEquals(result.getValue().getReturnCode(), -4);
     }
 
@@ -368,8 +355,28 @@ public class EventHandlerTest {
 
     @Test
     public void generateNextStepValidTest() {
-        Step result = EventHandler.generateNextStep(p);
-        Assert.assertEquals(result, null);
+        EventHandler.addMonitoredEvent(p, name, startDateTime, endDateTime, type, false, severity, frequency);
+        MonitoredEvent m = (MonitoredEvent) p.getEvents().get(1);
+        Step s = new Step("test", 0, false);
+        EventHandler.addStep(m, s);
+        Pair<AbstractEvent, Step> result = EventHandler.generateNextStep(p);
+        Assert.assertEquals(result.getValue(), s);
+    }
+
+    @Test
+    public void generateNextStepAllStepsCompleteTest() {
+        EventHandler.addMonitoredEvent(p, name, startDateTime, endDateTime, type, false, severity, frequency);
+        MonitoredEvent m = (MonitoredEvent) p.getEvents().get(1);
+        Step s = new Step("test", 0, true);
+        EventHandler.addStep(m, s);
+        Pair<AbstractEvent, Step> result = EventHandler.generateNextStep(p);
+        Assert.assertEquals(result.getValue(), null);
+    }
+
+    @Test
+    public void generateNextStepNoEventsFoundTest() {
+        Pair<AbstractEvent, Step> result = EventHandler.generateNextStep(p);
+        Assert.assertEquals(result.getValue(), null);
     }
 
     @Test
