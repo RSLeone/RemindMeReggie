@@ -190,20 +190,20 @@ public class UserInterfaceController {
                 //display summary
                 //no need to repeat since no input is required
                 EventHandler.checkCompletion(ProfileHandler.getCurrentProfile());
-                boolean success = false;
-                
-                success = displaySummary();
-
                 //Sort Events by severity is an extended use case, prompt for it if displaySumary was successful
-                if(success){
                     System.out.println("Would you like to sort the events by severity? (Yes/No): ");
                     String sortEventInput = inputReader.next();
 
-                    if(sortEventInput.equalsIgnoreCase("Yes")){
-                        sortEventBySeverity();
-                    }
-                    //else, do nothing
+                if(sortEventInput.equalsIgnoreCase("Yes")){
+                    sortEventBySeverity();
                 }
+                else{
+                    displaySummary();
+                }
+                
+                
+
+                
                 
             }
 
@@ -975,7 +975,7 @@ public class UserInterfaceController {
         //prompt user for file path
         String calanderFilePath = null;
         ArrayList<AbstractEvent> importedList = null;
-        System.out.println("Please enter the exact file location of the calendar you wish to import (.ics) :");
+        System.out.println("Please enter the exact file location of the calendar you wish to import (.ics). Include the file extension :");
         calanderFilePath = inputReader.next();
 
         importedList = CalendarHandler.importFromCalander(calanderFilePath);
