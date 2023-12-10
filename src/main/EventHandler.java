@@ -159,44 +159,43 @@ public class EventHandler {
         return Returns.SUCCESS;
     }
 
-    public static Pair<AbstractEvent, Returns> searchForEventSeverity(Profile p, int level) {
-
-        if (level < 0 || level > 5) {
-            return new Pair<AbstractEvent,Returns>(null, Returns.INVALID_SEVERITY_LEVEL);
+    public static Pair<ArrayList<AbstractEvent>, Returns> searchForEventName(Profile p, String name) {
+        if (name.length() <= 0 || name.length() > 50) {
+            return new Pair<ArrayList<AbstractEvent>, Returns> (null, Returns.INVALID_EVENT_NAME);
         }
-        
+
+        ArrayList<AbstractEvent> returnList = new ArrayList<AbstractEvent>();
         ArrayList<AbstractEvent> events = p.getEvents();
-        for(int i = 0; i < events.size(); i++){
-            if (events.get(i).getSeverityLevel() == level){
-                return new Pair<AbstractEvent, Returns> (events.get(i),Returns.SUCCESS);
+        for(int i = 0; i < events.size(); i++) {
+            if(events.get(i).getEventName().equals(name)) {
+                returnList.add(events.get(i));
             }
         }
-        return new Pair<AbstractEvent, Returns> (null, Returns.EVENT_DOES_NOT_EXIST);
-    }
 
-    public static Pair<AbstractEvent, Returns> searchForEventDateTime(Profile p, LocalDateTime dateTime) {
-        ArrayList<AbstractEvent> events = p.getEvents();
-        for(int i = 0; i < events.size(); i++){
-            if (events.get(i).getStartDateTime().equals(dateTime)){
-                return new Pair<AbstractEvent, Returns> (events.get(i), Returns.SUCCESS);
-            }
+        if(returnList.size() == 0) {
+            return new Pair<ArrayList<AbstractEvent>,Returns> (null, Returns.EVENT_DOES_NOT_EXIST);
         }
-        return new Pair<AbstractEvent, Returns> (null, Returns.EVENT_DOES_NOT_EXIST);
+        return new Pair<ArrayList<AbstractEvent>,Returns> (returnList, Returns.SUCCESS);
     }
     
-    public static Pair<AbstractEvent, Returns> searchForEventType(Profile p, String type) {
+    public static Pair<ArrayList<AbstractEvent>, Returns> searchForEventType(Profile p, String type) {
 
         if (type.length() <= 0 | type.length() > 50){
-            return new Pair<AbstractEvent,Returns>(null, Returns.INVALID_EVENT_TYPE);
+            return new Pair<ArrayList<AbstractEvent>,Returns>(null, Returns.INVALID_EVENT_TYPE);
         }
 
+        ArrayList<AbstractEvent> returnList = new ArrayList<AbstractEvent>();
         ArrayList<AbstractEvent> events = p.getEvents();
         for(int i = 0; i < events.size(); i++){
             if (events.get(i).getEventType().equals(type)){
-                return new Pair<AbstractEvent, Returns> (events.get(i), Returns.SUCCESS);
+                returnList.add(events.get(i));
             }
         }
-        return new Pair<AbstractEvent, Returns> (null, Returns.EVENT_DOES_NOT_EXIST);
+
+        if(returnList.size() == 0) {
+            return new Pair<ArrayList<AbstractEvent>,Returns>(null, Returns.EVENT_DOES_NOT_EXIST);
+        }
+        return new Pair<ArrayList<AbstractEvent>, Returns> (returnList, Returns.SUCCESS);
     }
 
     public static ArrayList<AbstractEvent> sortBySeverity(Profile p, AbstractEvent.Frequencies frequency) {
