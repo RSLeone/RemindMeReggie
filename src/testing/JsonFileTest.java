@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDateTime;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -64,5 +65,10 @@ public class JsonFileTest {
         boolean sucess = persistence.delete(profile.getUsername());
 
         assertEquals(sucess, true);
+    }
+
+    @After
+    public void finish(){
+        testDeleteProfile();
     }
 }
