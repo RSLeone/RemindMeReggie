@@ -131,7 +131,6 @@ public class UserInterfaceController {
                 success = logOut();
                 if(success){
                     //breaks out of interaction loop to return to main menu
-                    System.out.println("Logging out process successfully");
                     break;
                 }
                 
