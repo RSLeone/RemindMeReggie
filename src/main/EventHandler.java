@@ -155,6 +155,7 @@ public class EventHandler {
         ArrayList<Step> steps = m.getSteps();
         int newStepNum = m.getNextStepNumber() + 1;
         m.setNextStepNumber(newStepNum);
+        m.setNumSteps(m.getNumSteps() + 1);
         steps.add(s);
         return Returns.SUCCESS;
     }
