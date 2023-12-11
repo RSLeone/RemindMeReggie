@@ -170,6 +170,7 @@ public class UserInterfaceController {
                     //delete profile
                     //won't repeat since no input is required
                     boolean success = false;
+                    inputReader.nextLine();
                     success = deleteProfile();
 
                     //will exit to main menu since profile is gone
@@ -1216,7 +1217,7 @@ public class UserInterfaceController {
     //private helper method for exporting event listto Calander
     private boolean exportListToCalander(){
         String calanderFilePath = null;
-        System.out.println("Please enter the exact file location of where to wish to send the export :");
+        System.out.println("Please enter the exact file location of where to wish to send the export. Include the file extension (.ics) :");
         calanderFilePath = inputReader.nextLine();
 
         boolean success = false;
@@ -1243,7 +1244,7 @@ public class UserInterfaceController {
 
         System.out.println();
         inputReader.nextLine();
-        System.out.println("Please enter the number corresponding to the action you wish to do.");
+        System.out.println("Please enter the number corresponding to the search you wish to do.");
         for(String choice: searchEventOptions ){
             System.out.println(choice);
         }
@@ -1253,7 +1254,7 @@ public class UserInterfaceController {
             searchInput = inputReader.nextInt();
         }
         else{
-            System.out.println("Please enter a number corresponding to an action. Do not enter a letter or symbol. Please try again.");
+            System.out.println("Please enter a number corresponding to an search. Do not enter a letter or symbol. Please try again.");
             searchInput = 0;
             return searchInput;
         }
@@ -1280,9 +1281,8 @@ public class UserInterfaceController {
 
         //continously checks for input validation until correct
         int searchInput = 0;
-        while(searchInput ==0){
-            searchInput = searchForEventValidation();
-        }
+        
+        searchInput = searchForEventValidation();
 
         ArrayList<AbstractEvent> foundList = null;
         //if searching by Name
@@ -1386,7 +1386,7 @@ public class UserInterfaceController {
         String editEventInput = null;
         Returns editingAttempt = null;
         int userChoice = -1;
-        String[] userOptions = new String[]{"1. Name", "2. Type", "3. Start Time", "4. End Time", "5. Severity", "6. Frequency", "7. Number of Steps", "8. Step Name", "9. Step Completion", "10. Delete Event", "0. Done"};
+        String[] userOptions = new String[]{"1. Name", "2. Type", "3. Start Time", "4. End Time", "5. Severity", "6. Frequency", "7. Add a Step", "8. Step Completion", "9. Step Name", "10. Delete Event", "0. Done"};
         while(true){
             //give user a list of different options to edit in a loop
             //System.out.println();
@@ -1399,6 +1399,7 @@ public class UserInterfaceController {
             //input validation. Checks if input is a number within the valid range.
             if(inputReader.hasNextInt()){
                 userChoice = inputReader.nextInt();
+                inputReader.nextLine();
             }
             else{
                 System.out.println("Please enter a number corresponding to an action. Do not enter a letter or symbol. Please try again.");
@@ -1411,7 +1412,7 @@ public class UserInterfaceController {
             if(userChoice == 0){
                         //final confirmation
                 String finalConfirmation = null;
-                inputReader.nextLine();
+                
                 System.out.println("Are you finished with your edits? Type 'Done' to confirm");
                 finalConfirmation = inputReader.nextLine();
                 if(finalConfirmation.equalsIgnoreCase("done")){
@@ -1427,7 +1428,7 @@ public class UserInterfaceController {
 
             if(userChoice == 1){
                 //editname
-                inputReader.nextLine();
+                
                 
                 System.out.println("What is the name for the event? (Between 0 and 50 characters)");
                 editEventInput = inputReader.nextLine();
@@ -1452,7 +1453,7 @@ public class UserInterfaceController {
 
             if(userChoice == 2){
                 //edit type
-                inputReader.nextLine();
+                
                 System.out.println("What is the type for the event? (Between 1 and 50 characters)");
                 editEventInput = inputReader.nextLine();
                 editingAttempt = EventHandler.editEventType(ProfileHandler.getCurrentProfile(), foundEvent, editEventInput);
@@ -1752,7 +1753,7 @@ public class UserInterfaceController {
 
             if(userChoice == 6){
                 //edit frequency
-                inputReader.nextLine();
+                
                 AbstractEvent.Frequencies frequencyChoice = null;
 
                 //repeats until successful input
@@ -1805,6 +1806,7 @@ public class UserInterfaceController {
                     System.out.println("There are no steps for this type of event, only monitored events.");
                 }
                 else{
+                    
                     Returns editStepAttempt = null;
                     String stepName = null;
                     //add a step
@@ -1823,7 +1825,7 @@ public class UserInterfaceController {
                     }
     
                     //adds step to end of event
-                    Step nextStep = new Step(stepName,((MonitoredEvent)foundEvent).getNumSteps() + 1 , false);
+                    Step nextStep = new Step(stepName,((MonitoredEvent)foundEvent).getNumSteps() + 1, false);
                     editStepAttempt = EventHandler.addStep((MonitoredEvent)foundEvent, nextStep);
 
                     if(editStepAttempt.getReturnCode() == 0){
@@ -1842,12 +1844,13 @@ public class UserInterfaceController {
                     System.out.println("There are no steps for this type of event, only monitored events.");
                 }
                 else{
+                    
                     Returns editStepAttempt = null;
-                    int stepTotal = ((MonitoredEvent)foundEvent).getNumSteps();
+                    ArrayList<Step> steps = ((MonitoredEvent)foundEvent).getSteps();
 
-                    for(int i = 1; i<= stepTotal; i++){
+                    for(int i = 1; i <= steps.size(); i++){
                         //mark each step complete
-                        System.out.println("Is step #" + i + " complete?");
+                        System.out.println("Is step #" + i + " complete? (Yes/No)");
                         editEventInput = inputReader.nextLine();
                         if(editEventInput.equalsIgnoreCase("Yes")){
                             editStepAttempt = EventHandler.setStepComplete(ProfileHandler.getCurrentProfile(), ((MonitoredEvent)foundEvent), i);
@@ -1868,21 +1871,19 @@ public class UserInterfaceController {
             }
 
             if(userChoice == 9){
-                if(!(foundEvent instanceof MonitoredEvent)){
-                    System.out.println("There are no steps for this type of event, only monitored events.");
-                }
-                else{
+                if(foundEvent instanceof MonitoredEvent){
                     Returns editStepName = null;
                     //edit step name
-                    int stepTotal = ((MonitoredEvent)foundEvent).getNumSteps();
+                    
+                    ArrayList<Step> steps = ((MonitoredEvent)foundEvent).getSteps();
                     String newStepName = null;
-                    for(int i = 1; i <= stepTotal; i++){
-                        System.out.println("Would you like to edit Step #" + i +"s name of: "+ ((MonitoredEvent)foundEvent).getSteps().get(i).getStepName() + "?");
+                    for(int i = 0; i < steps.size(); i++){
+                        System.out.println("Would you like to edit Step #" + (i+1) +"s name of: "+ ((MonitoredEvent)foundEvent).getSteps().get(i).getStepName() +  "(Yes/No)?");
                         newStepName = inputReader.nextLine();
                         if(newStepName.equalsIgnoreCase("Yes")){
                             //repeat until successful entry
                             while(true){
-                                System.out.println("What is the new name of step #" + i + "? (Must be between 0 and 50 characters)");
+                                System.out.println("What is the new name of step #" + (i+1) + "? (Must be between 0 and 50 characters)");
                                 newStepName = inputReader.nextLine();
 
                                 if(newStepName.length() < 0 || newStepName == null || newStepName.length() > 50){
@@ -1893,7 +1894,7 @@ public class UserInterfaceController {
                                 }
                             }
 
-                            editStepName = EventHandler.editStepName(((MonitoredEvent)foundEvent), i, newStepName);
+                            editStepName = EventHandler.editStepName(((MonitoredEvent)foundEvent), (i+1), newStepName);
 
                             if(editStepName.getReturnCode() == 0){
                                 System.out.println("Step edit successful.");
@@ -1911,8 +1912,11 @@ public class UserInterfaceController {
                                 break;
                             }
                         }
-                        
-                    }
+                    
+                }
+                }
+                else{
+                    System.out.println("There are no steps for this type of event, only monitored events.");
                 }
 
             }
@@ -1924,7 +1928,8 @@ public class UserInterfaceController {
                 return true;
             }
         }
-    }
+        }
+
 
         
 
